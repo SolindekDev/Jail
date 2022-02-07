@@ -1,0 +1,4 @@
+space main[argv] [int]
+    put "Hello, World"
+    ret 0
+end
