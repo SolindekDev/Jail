@@ -85,6 +85,8 @@ func lexer_init(value string, filename string) Lexer {
 			lexer.tokens = append(lexer.tokens, create_token(filename, DIVIDE_TOKEN, DIVIDE, lexer_row, lexer_col))
 		} else if ac == MULTIPLY_TOKEN {
 			lexer.tokens = append(lexer.tokens, create_token(filename, MULTIPLY_TOKEN, MULTIPLY, lexer_row, lexer_col))
+		} else if ac == MODULUS_TOKEN {
+			lexer.tokens = append(lexer.tokens, create_token(filename, MODULUS_TOKEN, MODULUS, lexer_row, lexer_col))
 		} else if value[i] == 13 {
 			continue
 		} else if ac == "." {

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"strconv"
 )
@@ -89,6 +90,24 @@ func eval_init(parser Parser) {
 				i2, _ := strconv.ParseFloat(parser.opcodes[i].args[1], 64)
 
 				calc := i1 * i2
+
+				last_calc = fmt.Sprint(calc)
+			}
+			break
+		case OPCODE_MODULUS_NUMBERS:
+			first_arg, _ := strconv.ParseFloat(parser.opcodes[i].args[0], 64)
+			if first_arg == 0x0f3019fb {
+				calc2, _ := strconv.ParseFloat(last_calc, 64)
+				i1, _ := strconv.ParseFloat(parser.opcodes[i].args[1], 64)
+
+				calc := math.Remainder(calc2, i1)
+
+				last_calc = fmt.Sprint(calc)
+			} else {
+				i1, _ := strconv.ParseFloat(parser.opcodes[i].args[0], 64)
+				i2, _ := strconv.ParseFloat(parser.opcodes[i].args[1], 64)
+
+				calc := math.Remainder(i1, i2)
 
 				last_calc = fmt.Sprint(calc)
 			}

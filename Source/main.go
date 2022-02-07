@@ -62,9 +62,9 @@ func main() {
 		}
 
 		var file_content string = get_file_content(argv[1])
+
 		var lexer Lexer = lexer_init(file_content, argv[1])
 		var parser Parser = parser_init(lexer)
-		UNUSED(parser)
-		// eval_init(parser.opcodes)
+		eval_init(parser)
 	}
 }

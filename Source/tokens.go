@@ -12,6 +12,7 @@ const (
 	MINUS
 	MULTIPLY
 	DIVIDE
+	MODULUS
 	NIL
 )
 
@@ -20,6 +21,7 @@ const (
 	MINUS_TOKEN    = "-"
 	DIVIDE_TOKEN   = "/"
 	MULTIPLY_TOKEN = "*"
+	MODULUS_TOKEN  = "^"
 )
 
 type Position struct {
@@ -77,6 +79,9 @@ func get_raw_token_type(type_token int) string {
 		break
 	case MULTIPLY:
 		to_ret = "Multiply"
+		break
+	case MODULUS:
+		to_ret = "Modulus"
 		break
 	}
 
