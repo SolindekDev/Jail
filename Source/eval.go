@@ -112,6 +112,9 @@ func eval_init(parser Parser) {
 				last_calc = fmt.Sprint(calc)
 			}
 			break
+		case OPCODE_PUTS_STRING:
+			fmt.Println(parser.opcodes[i].args[0])
+			break
 		case OPCODE_RETURN_NUMBER:
 			last_calc = fmt.Sprint(parser.opcodes[i].args[0])
 		}
@@ -119,5 +122,7 @@ func eval_init(parser Parser) {
 
 	UNUSED(last_calc)
 
-	fmt.Println(last_calc)
+	if last_calc != "" {
+		fmt.Printf("%s\n", last_calc)
+	}
 }

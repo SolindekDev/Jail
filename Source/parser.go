@@ -40,7 +40,22 @@ func parser_init(lexer Lexer) Parser {
 			continue
 		}
 
-		if lexer.tokens[i].type_token == INT || lexer.tokens[i].type_token == FLOAT {
+		if lexer.tokens[i].type_token == IDENTIFIER {
+			if lexer.tokens[i].value == KEYWORD_PUTS {
+				if len(lexer.tokens) > i+1 {
+					if lexer.tokens[i+1].type_token == STRING {
+						parser.opcodes = append(parser.opcodes, OpCode_Puts(lexer.tokens[i+1].value))
+						freeze += 1
+					} else {
+						error_print(lexer.tokens[i], "Expected an String after "+KEYWORD_PUTS+" keyword no "+get_raw_token_type(lexer.tokens[i+1].type_token), "MemoryError")
+						error = true
+					}
+				} else {
+					error_print(lexer.tokens[i], "Expected an String after "+KEYWORD_PUTS+" keyword", "MemoryError")
+					error = true
+				}
+			}
+		} else if lexer.tokens[i].type_token == INT || lexer.tokens[i].type_token == FLOAT {
 			if lexer.tokens[i].type_token == INT {
 				i1, _ := strconv.ParseInt(lexer.tokens[i].value, 10, 64)
 
@@ -221,8 +236,10 @@ func parser_init(lexer Lexer) Parser {
 	}
 
 	if len(parser.opcodes) == 0 && len(lexer.tokens) == 1 {
-		i1, _ := strconv.ParseFloat(lexer.tokens[0].value, 64)
-		parser.opcodes = append(parser.opcodes, OpCode_Return(i1))
+		if lexer.tokens[0].type_token == FLOAT || lexer.tokens[0].type_token == INT {
+			i1, _ := strconv.ParseFloat(lexer.tokens[0].value, 64)
+			parser.opcodes = append(parser.opcodes, OpCode_Return(i1))
+		}
 	}
 
 	UNUSED(error, freeze, num, num_type)

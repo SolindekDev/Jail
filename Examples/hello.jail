@@ -1,4 +1,4 @@
 space main[argv] [int]
-    put "Hello, World"
+    puts "Hello, World"
     ret 0
 end

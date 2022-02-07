@@ -13,6 +13,8 @@ const (
 	MULTIPLY
 	DIVIDE
 	MODULUS
+	BLOCK_BRACKETS_OPEN
+	BLOCK_BRACKETS_CLOSE
 	NIL
 )
 
@@ -22,6 +24,9 @@ const (
 	DIVIDE_TOKEN   = "/"
 	MULTIPLY_TOKEN = "*"
 	MODULUS_TOKEN  = "^"
+
+	BLOCK_BRACKETS_OPEN_TOKEN  = "["
+	BLOCK_BRACKETS_CLOSE_TOKEN = "]"
 )
 
 type Position struct {
@@ -82,6 +87,12 @@ func get_raw_token_type(type_token int) string {
 		break
 	case MODULUS:
 		to_ret = "Modulus"
+		break
+	case BLOCK_BRACKETS_OPEN:
+		to_ret = "OpenBracketsBlock"
+		break
+	case BLOCK_BRACKETS_CLOSE:
+		to_ret = "CloseBracketsBlock"
 		break
 	}
 

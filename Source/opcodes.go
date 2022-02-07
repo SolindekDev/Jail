@@ -26,6 +26,7 @@ const (
 	OPCODE_DIVIDE_NUMBERS
 	OPCODE_MULTIPLY_NUMBERS
 	OPCODE_MODULUS_NUMBERS
+	OPCODE_PUTS_STRING
 	OPCODE_RETURN_NUMBER
 )
 
@@ -35,6 +36,12 @@ func create_opcode(opcode int, args []string) OpCode {
 	opcode_.args = args
 
 	return opcode_
+}
+
+func OpCode_Puts(putValue string) OpCode {
+	args := []string{putValue}
+
+	return create_opcode(OPCODE_PUTS_STRING, args)
 }
 
 func OpCode_Return(return_num float64) OpCode {

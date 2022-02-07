@@ -53,7 +53,23 @@ func lexer_init(value string, filename string) Lexer {
 		} else if ac == " " {
 			lexer_space = true
 		} else if strings.ContainsAny(ac, LETTERS) {
-			// Soon...
+			if last.type_token == NIL {
+				lexer.tokens = append(lexer.tokens, create_token(filename, ac, IDENTIFIER, lexer_row, lexer_col))
+				lexer_space = false
+			} else {
+				if lexer_space == false {
+					if last.type_token == IDENTIFIER {
+						lexer.tokens[len(lexer.tokens)-1].value += ac
+						lexer_space = false
+					} else {
+						lexer.tokens = append(lexer.tokens, create_token(filename, ac, IDENTIFIER, lexer_row, lexer_col))
+						lexer_space = false
+					}
+				} else {
+					lexer.tokens = append(lexer.tokens, create_token(filename, ac, IDENTIFIER, lexer_row, lexer_col))
+					lexer_space = false
+				}
+			}
 		} else if strings.ContainsAny(ac, NUMBERS) {
 			if last.type_token == NIL {
 				lexer.tokens = append(lexer.tokens, create_token(filename, ac, INT, lexer_row, lexer_col))
@@ -87,6 +103,10 @@ func lexer_init(value string, filename string) Lexer {
 			lexer.tokens = append(lexer.tokens, create_token(filename, MULTIPLY_TOKEN, MULTIPLY, lexer_row, lexer_col))
 		} else if ac == MODULUS_TOKEN {
 			lexer.tokens = append(lexer.tokens, create_token(filename, MODULUS_TOKEN, MODULUS, lexer_row, lexer_col))
+		} else if ac == BLOCK_BRACKETS_OPEN_TOKEN {
+			lexer.tokens = append(lexer.tokens, create_token(filename, BLOCK_BRACKETS_OPEN_TOKEN, BLOCK_BRACKETS_OPEN, lexer_row, lexer_col))
+		} else if ac == BLOCK_BRACKETS_CLOSE_TOKEN {
+			lexer.tokens = append(lexer.tokens, create_token(filename, BLOCK_BRACKETS_CLOSE_TOKEN, BLOCK_BRACKETS_CLOSE, lexer_row, lexer_col))
 		} else if value[i] == 13 {
 			continue
 		} else if ac == "." {
