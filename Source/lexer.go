@@ -1,6 +1,8 @@
 package main
 
-import "strings"
+import (
+	"strings"
+)
 
 func get_last_token(tokens []Token, filename string) Token {
 	if len(tokens) == 0 {
@@ -88,20 +90,23 @@ func lexer_init(value string, filename string) Lexer {
 		} else if ac == "." {
 			if last.type_token == NIL {
 				lexer.tokens = append(lexer.tokens, create_token(filename, "0"+ac, FLOAT, lexer_row, lexer_col))
+				lexer_space = false
 			} else {
 				if last.type_token == INT || last.type_token == FLOAT {
 					if last.type_token == INT {
-						last.type_token = FLOAT
-						last.value += ac
+						lexer.tokens[len(lexer.tokens)-1].type_token = FLOAT
+						lexer.tokens[len(lexer.tokens)-1].value += ac
 					} else {
 						if strings.ContainsAny(last.value, ".") == true {
 							error_print_lexer(lexer_row, lexer_col, filename, "This float already contains \".\"", "SyntaxError")
 						} else {
-
+							lexer.tokens[len(lexer.tokens)-1].type_token = FLOAT
+							lexer.tokens[len(lexer.tokens)-1].value += ac
 						}
 					}
 				} else {
 					lexer.tokens = append(lexer.tokens, create_token(filename, "0"+ac, FLOAT, lexer_row, lexer_col))
+					lexer_space = false
 				}
 			}
 		} else {
@@ -116,13 +121,17 @@ func lexer_init(value string, filename string) Lexer {
 
 	UNUSED(lexer_row, lexer_col, lexer_comments, lexer_space, lexer_string)
 
-	// print("[ \n")
-	// for i := 0; i < len(lexer.tokens); i++ {
-	// 	print("	\"" + lexer.tokens[i].value + "\":" + get_raw_token_type(lexer.tokens[i].type_token) + "\n")
-	// }
-	// print("]\n")
+	// print_out_lexer(lexer)
 
 	// error_print(lexer.tokens[i], "there is an error bro", "SyntaxError")
 
 	return lexer
+}
+
+func print_out_lexer(lexer Lexer) {
+	print("[ \n")
+	for i := 0; i < len(lexer.tokens); i++ {
+		print("	\"" + lexer.tokens[i].value + "\":" + get_raw_token_type(lexer.tokens[i].type_token) + "\n")
+	}
+	print("]\n")
 }

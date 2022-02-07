@@ -1,6 +1,8 @@
 package main
 
-import "strconv"
+import (
+	"fmt"
+)
 
 type Lexer struct {
 	tokens   []Token
@@ -33,26 +35,26 @@ func create_opcode(opcode int, args []string) OpCode {
 	return opcode_
 }
 
-func OpCode_Divide(number1 int, number2 int) OpCode {
-	args := []string{strconv.Itoa(number1), strconv.Itoa(number2)}
+func OpCode_Divide(number1 float64, number2 float64) OpCode {
+	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
 
 	return create_opcode(OPCODE_DIVIDE_NUMBERS, args)
 }
 
-func OpCode_Multiply(number1 int, number2 int) OpCode {
-	args := []string{strconv.Itoa(number1), strconv.Itoa(number2)}
+func OpCode_Multiply(number1 float64, number2 float64) OpCode {
+	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
 
 	return create_opcode(OPCODE_MULTIPLY_NUMBERS, args)
 }
 
-func OpCode_Minus(number1 int, number2 int) OpCode {
-	args := []string{strconv.Itoa(number1), strconv.Itoa(number2)}
+func OpCode_Minus(number1 float64, number2 float64) OpCode {
+	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
 
 	return create_opcode(OPCODE_MINUS_NUMBERS, args)
 }
 
-func OpCode_Add(number1 int, number2 int) OpCode {
-	args := []string{strconv.Itoa(number1), strconv.Itoa(number2)}
+func OpCode_Add(number1 float64, number2 float64) OpCode {
+	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
 
 	return create_opcode(OPCODE_ADD_NUMBERS, args)
 }
