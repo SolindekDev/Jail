@@ -7,3 +7,6 @@ Jail programming language
 - [ ] Add modulus operation
 - [ ] Add Identifier support (keywords)
 - [ ] Printing out program 
+# Folders
+- **Source** - Source of interpreter
+- **Examples** - Examples of Jail language
