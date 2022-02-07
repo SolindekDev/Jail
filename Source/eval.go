@@ -93,6 +93,8 @@ func eval_init(parser Parser) {
 				last_calc = fmt.Sprint(calc)
 			}
 			break
+		case OPCODE_RETURN_NUMBER:
+			last_calc = fmt.Sprint(parser.opcodes[i].args[0])
 		}
 	}
 

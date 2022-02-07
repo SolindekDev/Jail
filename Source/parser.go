@@ -221,6 +221,11 @@ func parser_init(lexer Lexer) Parser {
 		}
 	}
 
+	if len(parser.opcodes) == 0 && len(lexer.tokens) == 1 {
+		i1, _ := strconv.ParseFloat(lexer.tokens[0].value, 64)
+		parser.opcodes = append(parser.opcodes, OpCode_Return(i1))
+	}
+
 	UNUSED(error, freeze, num, num_type)
 
 	parser.errorCount = error

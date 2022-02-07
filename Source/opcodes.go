@@ -25,6 +25,7 @@ const (
 	OPCODE_MINUS_NUMBERS
 	OPCODE_DIVIDE_NUMBERS
 	OPCODE_MULTIPLY_NUMBERS
+	OPCODE_RETURN_NUMBER
 )
 
 func create_opcode(opcode int, args []string) OpCode {
@@ -33,6 +34,12 @@ func create_opcode(opcode int, args []string) OpCode {
 	opcode_.args = args
 
 	return opcode_
+}
+
+func OpCode_Return(return_num float64) OpCode {
+	args := []string{fmt.Sprint(return_num)}
+
+	return create_opcode(OPCODE_RETURN_NUMBER, args)
 }
 
 func OpCode_Divide(number1 float64, number2 float64) OpCode {
