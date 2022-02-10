@@ -7,5 +7,5 @@ When you have bigger problems with programming in **Jail** go into our discord s
 ## Contents Table
 | Download                 | Foo |
 | ------------------------ | ----------- |
-| [Download]()             | Bar       |
-| [Building from source]() | Foo        |
+| [Download](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Download.md)             | Bar       |
+| [Building from source](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Building.md) | Foo        |
