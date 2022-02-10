@@ -18,12 +18,12 @@ brew install golang-migrate git
 ```
 git clone https://github.com/SolindekDev/Jail
 cd Jail/Source
-./fast-jail-build.sh
+./fast-build.sh
 ```
 ### Windows 
 Go into they're website and download that's too easy to make a tutorial after this, use this commands
 ```
 git clone https://github.com/SolindekDev/Jail
 cd Jail/Source
-./fast-jail-build.bat
+./fast-build.bat
 ```
