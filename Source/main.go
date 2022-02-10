@@ -36,8 +36,10 @@ func input() {
 	_input, _ := reader.ReadString('\n')
 
 	var lexer Lexer = lexer_init(_input, "Input")
-	var parser Parser = parser_init(lexer)
+	lexer = refactor_tokens_math(lexer)
+	var parser Parser = parser_init(lexer, "Input")
 	eval_init(parser)
+	UNUSED(parser)
 
 	input()
 }
@@ -64,7 +66,8 @@ func main() {
 		var file_content string = get_file_content(argv[1])
 
 		var lexer Lexer = lexer_init(file_content, argv[1])
-		var parser Parser = parser_init(lexer)
+		lexer = refactor_tokens_math(lexer)
+		var parser Parser = parser_init(lexer, argv[1])
 		eval_init(parser)
 	}
 }

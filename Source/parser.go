@@ -1,10 +1,43 @@
 package main
 
 import (
-	"math"
 	"os"
 	"strconv"
+	"strings"
 )
+
+func refactor_tokens_math(lexer Lexer) Lexer {
+	var lexer_ Lexer
+
+	lexer_.filename = lexer.filename
+	lexer_.value = lexer.value
+
+	var math_ bool = false
+	var j int = 0
+
+	for i := 0; i < len(lexer.tokens); i++ {
+		if lexer.tokens[i].type_token == IDENTIFIER || lexer.tokens[i].type_token == STRING {
+			lexer_.tokens = append(lexer_.tokens, create_token(lexer_.filename, lexer.tokens[i].value, lexer.tokens[i].type_token, lexer.tokens[i].pos.row, lexer.tokens[i].pos.col))
+			j++
+			math_ = false
+		} else if math_ == true {
+			lexer_.tokens[j-1].value += lexer.tokens[i].value
+		} else if lexer.tokens[i].type_token == PLUS || lexer.tokens[i].type_token == MINUS || lexer.tokens[i].type_token == MULTIPLY || lexer.tokens[i].type_token == INT || lexer.tokens[i].type_token == DIVIDE || lexer.tokens[i].type_token == MODULUS && math_ == false {
+			lexer_.tokens = append(lexer_.tokens, create_token(lexer_.filename, lexer.tokens[i].value, MATH, lexer.tokens[i].pos.row, lexer.tokens[i].pos.col))
+			j++
+			math_ = true
+		} else {
+			lexer_.tokens = append(lexer_.tokens, create_token(lexer_.filename, lexer.tokens[i].value, lexer.tokens[i].type_token, lexer.tokens[i].pos.row, lexer.tokens[i].pos.col))
+			j++
+		}
+	}
+
+	UNUSED(math_)
+
+	// print_out_lexer(lexer_)
+
+	return lexer_
+}
 
 func print_out_parser(parser Parser) {
 	print("[ \n")
@@ -24,17 +57,13 @@ func print_out_parser(parser Parser) {
 	print("\n]\n")
 }
 
-func parser_init(lexer Lexer) Parser {
+func parser_init(lexer Lexer, filename string) Parser {
 	var parser Parser
 
 	var freeze int = 0
 	var error bool = false
-	var num int = 0
-	var num1 string = ""
-	var num_type int = 100
 
 	for i := 0; i < len(lexer.tokens); i++ {
-
 		if freeze != 0 {
 			freeze--
 			continue
@@ -47,191 +76,36 @@ func parser_init(lexer Lexer) Parser {
 						parser.opcodes = append(parser.opcodes, OpCode_Puts(lexer.tokens[i+1].value))
 						freeze += 1
 					} else {
-						error_print(lexer.tokens[i], "Expected an String after "+KEYWORD_PUTS+" keyword no "+get_raw_token_type(lexer.tokens[i+1].type_token), "MemoryError")
+						error_print(lexer.tokens[i], "Expected an String after "+KEYWORD_PUTS+" keyword no "+get_raw_token_type(lexer.tokens[i+1].type_token), "MemoryError", filename)
 						error = true
 					}
 				} else {
-					error_print(lexer.tokens[i], "Expected an String after "+KEYWORD_PUTS+" keyword", "MemoryError")
+					error_print(lexer.tokens[i], "Expected an String after "+KEYWORD_PUTS+" keyword", "MemoryError", filename)
 					error = true
 				}
 			}
-		} else if lexer.tokens[i].type_token == INT || lexer.tokens[i].type_token == FLOAT {
-			if lexer.tokens[i].type_token == INT {
-				i1, _ := strconv.ParseInt(lexer.tokens[i].value, 10, 64)
+		} else if lexer.tokens[i].type_token == MATH {
+			var num int = 0
+			var operator int = 0
 
-				if i1 == 9223372036854775807 {
-					error_print(lexer.tokens[i], "Int is too big", "MemoryError")
-					error = true
-				}
-
-				if num == 1 {
-					error_print(lexer.tokens[i], "Expected operator not another number", "SyntaxError")
-					error = true
-				} else {
-					num1 = lexer.tokens[i].value
+			for j := 0; j < len(lexer.tokens[i].value); j++ {
+				if lexer.tokens[i].value[j] == '+' || lexer.tokens[i].value[j] == '-' || lexer.tokens[i].value[j] == '/' || lexer.tokens[i].value[j] == '*' || lexer.tokens[i].value[j] == '%' {
+					if num == 0 {
+						err := "Expected an number before operator "
+						error_print(lexer.tokens[i], string(err)+string(lexer.tokens[i].value[j]), "SyntaxError", filename)
+						error = true
+					} else {
+					}
+				} else if strings.ContainsAny(string(lexer.tokens[i].value[j]), NUMBERS) {
 					num = 1
-					num_type = INT
-				}
-			} else {
-				i1, _ := strconv.ParseFloat(lexer.tokens[i].value, 64)
-
-				if i1 == math.MaxFloat64 {
-					error_print(lexer.tokens[i], "Float is too big", "MemoryError")
-					error = true
-				}
-
-				if num == 1 {
-					error_print(lexer.tokens[i], "Expected operator not another number", "SyntaxError")
-					error = true
-				} else {
-					num1 = lexer.tokens[i].value
-					num = 1
-					num_type = FLOAT
 				}
 			}
 
-		} else if lexer.tokens[i].type_token == PLUS || lexer.tokens[i].type_token == MINUS || lexer.tokens[i].type_token == MULTIPLY || lexer.tokens[i].type_token == DIVIDE || lexer.tokens[i].type_token == MODULUS {
-			if lexer.tokens[i].type_token == PLUS {
-				if num == 1 {
-					if len(lexer.tokens) > i+1 {
-						if num1 == "last_operation" {
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Add(0x0f3019fb, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						} else {
-							i1, _ := strconv.ParseFloat(num1, 64)
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Add(i1, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						}
-					} else {
-						error_print(lexer.tokens[i], "Expected a number after a plus operator", "SyntaxError")
-						error = true
-						freeze += 1
-					}
-				} else {
-					error_print(lexer.tokens[i], "Before plus operator need to be a number", "SyntaxError")
-					error = true
-				}
-			} else if lexer.tokens[i].type_token == MINUS {
-				if num == 1 {
-					if len(lexer.tokens) > i+1 {
-						if num1 == "last_operation" {
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Minus(0x0f3019fb, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						} else {
-							i1, _ := strconv.ParseFloat(num1, 64)
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Minus(i1, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						}
-					} else {
-						error_print(lexer.tokens[i], "Expected a number after a minus operator", "SyntaxError")
-						error = true
-						freeze += 1
-					}
-				} else {
-					error_print(lexer.tokens[i], "Before minus operator need to be a number", "SyntaxError")
-					error = true
-				}
-			} else if lexer.tokens[i].type_token == MODULUS {
-				if num == 1 {
-					if len(lexer.tokens) > i+1 {
-						if num1 == "last_operation" {
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Modulus(0x0f3019fb, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						} else {
-							i1, _ := strconv.ParseFloat(num1, 64)
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Modulus(i1, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						}
-					} else {
-						error_print(lexer.tokens[i], "Expected a number after a modulus operator", "SyntaxError")
-						error = true
-						freeze += 1
-					}
-				} else {
-					error_print(lexer.tokens[i], "Before modulus operator need to be a number", "SyntaxError")
-					error = true
-				}
-			} else if lexer.tokens[i].type_token == DIVIDE {
-				if num == 1 {
-					if len(lexer.tokens) > i+1 {
-						if num1 == "last_operation" {
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Divide(0x0f3019fb, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						} else {
-							i1, _ := strconv.ParseFloat(num1, 64)
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Divide(i1, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						}
-					} else {
-						error_print(lexer.tokens[i], "Expected a number after a divide operator", "SyntaxError")
-						error = true
-						freeze += 1
-					}
-				} else {
-					error_print(lexer.tokens[i], "Before divide operator need to be a number", "SyntaxError")
-					error = true
-				}
-			} else if lexer.tokens[i].type_token == MULTIPLY {
-				if num == 1 {
-					if len(lexer.tokens) > i+1 {
-						if num1 == "last_operation" {
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Multiply(0x0f3019fb, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						} else {
-							i1, _ := strconv.ParseFloat(num1, 64)
-							i2, _ := strconv.ParseFloat(lexer.tokens[i+1].value, 64)
-
-							parser.opcodes = append(parser.opcodes, OpCode_Multiply(i1, i2))
-							freeze += 1
-							num1 = "last_operation"
-							num = 1
-						}
-					} else {
-						error_print(lexer.tokens[i], "Expected a number after a multiply operator", "SyntaxError")
-						error = true
-						freeze += 1
-					}
-				} else {
-					error_print(lexer.tokens[i], "Before multiply operator need to be a number", "SyntaxError")
-					error = true
-				}
+			if error != true {
+				parser.opcodes = append(parser.opcodes, OpCode_Math(lexer.tokens[i].value))
 			}
+
+			UNUSED(operator)
 		}
 	}
 
@@ -242,7 +116,7 @@ func parser_init(lexer Lexer) Parser {
 		}
 	}
 
-	UNUSED(error, freeze, num, num_type)
+	UNUSED(error, freeze)
 
 	parser.errorCount = error
 

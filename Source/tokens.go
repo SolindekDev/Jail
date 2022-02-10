@@ -16,6 +16,7 @@ const (
 	BLOCK_BRACKETS_OPEN
 	BLOCK_BRACKETS_CLOSE
 	NIL
+	MATH
 )
 
 const (
@@ -23,7 +24,7 @@ const (
 	MINUS_TOKEN    = "-"
 	DIVIDE_TOKEN   = "/"
 	MULTIPLY_TOKEN = "*"
-	MODULUS_TOKEN  = "^"
+	MODULUS_TOKEN  = "%"
 
 	BLOCK_BRACKETS_OPEN_TOKEN  = "["
 	BLOCK_BRACKETS_CLOSE_TOKEN = "]"
@@ -93,6 +94,9 @@ func get_raw_token_type(type_token int) string {
 		break
 	case BLOCK_BRACKETS_CLOSE:
 		to_ret = "CloseBracketsBlock"
+		break
+	case MATH:
+		to_ret = "Math"
 		break
 	}
 

@@ -21,11 +21,7 @@ type Parser struct {
 }
 
 const (
-	OPCODE_ADD_NUMBERS int = iota
-	OPCODE_MINUS_NUMBERS
-	OPCODE_DIVIDE_NUMBERS
-	OPCODE_MULTIPLY_NUMBERS
-	OPCODE_MODULUS_NUMBERS
+	OPCODE_MATH int = iota
 	OPCODE_PUTS_STRING
 	OPCODE_RETURN_NUMBER
 )
@@ -50,32 +46,8 @@ func OpCode_Return(return_num float64) OpCode {
 	return create_opcode(OPCODE_RETURN_NUMBER, args)
 }
 
-func OpCode_Modulus(number1 float64, number2 float64) OpCode {
-	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
+func OpCode_Math(math string) OpCode {
+	args := []string{math}
 
-	return create_opcode(OPCODE_MODULUS_NUMBERS, args)
-}
-
-func OpCode_Divide(number1 float64, number2 float64) OpCode {
-	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
-
-	return create_opcode(OPCODE_DIVIDE_NUMBERS, args)
-}
-
-func OpCode_Multiply(number1 float64, number2 float64) OpCode {
-	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
-
-	return create_opcode(OPCODE_MULTIPLY_NUMBERS, args)
-}
-
-func OpCode_Minus(number1 float64, number2 float64) OpCode {
-	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
-
-	return create_opcode(OPCODE_MINUS_NUMBERS, args)
-}
-
-func OpCode_Add(number1 float64, number2 float64) OpCode {
-	args := []string{fmt.Sprint(number1), fmt.Sprint(number2)}
-
-	return create_opcode(OPCODE_ADD_NUMBERS, args)
+	return create_opcode(OPCODE_MATH, args)
 }

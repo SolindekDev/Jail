@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"strings"
 )
 
@@ -31,7 +32,7 @@ func lexer_init(value string, filename string) Lexer {
 			lexer_row++
 			lexer_col = 0
 			lexer_comments = false
-		} else if ac == "%" {
+		} else if ac == "#" {
 			if lexer_string == true {
 				lexer.tokens[len(lexer.tokens)-1].value += ac
 			} else {
@@ -142,6 +143,10 @@ func lexer_init(value string, filename string) Lexer {
 	}
 
 	UNUSED(lexer_row, lexer_col, lexer_comments, lexer_space, lexer_string)
+
+	if error_ == true {
+		os.Exit(FailedCode)
+	}
 
 	// print_out_lexer(lexer)
 
