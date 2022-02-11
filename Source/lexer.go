@@ -22,6 +22,7 @@ func lexer_init(value string, filename string) Lexer {
 	var error_ bool = false
 
 	var lexer_comments bool = false
+	var lexer_comments_multi bool = false
 	var lexer_space bool = false
 	var lexer_string bool = false
 
@@ -40,7 +41,19 @@ func lexer_init(value string, filename string) Lexer {
 					lexer_comments = true
 				}
 			}
+		} else if ac == "$" {
+			if lexer_string == true {
+				lexer.tokens[len(lexer.tokens)-1].value += ac
+			} else {
+				if lexer_comments_multi == false {
+					lexer_comments_multi = true
+				} else {
+					lexer_comments_multi = false
+				}
+			}
 		} else if lexer_comments == true {
+			continue
+		} else if lexer_comments_multi == true {
 			continue
 		} else if ac == "\"" {
 			if lexer_string == true {
@@ -142,7 +155,7 @@ func lexer_init(value string, filename string) Lexer {
 		lexer_col++
 	}
 
-	UNUSED(lexer_row, lexer_col, lexer_comments, lexer_space, lexer_string)
+	UNUSED(lexer_row, lexer_col, lexer_comments, lexer_space, lexer_string, lexer_comments_multi)
 
 	if error_ == true {
 		os.Exit(FailedCode)
