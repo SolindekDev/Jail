@@ -9,3 +9,4 @@ When you have bigger problems with programming in **Jail** go into our discord s
 | ------------------------ | ----------- |
 | [Download](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Download.md)             | [Hello World!](https://github.com/SolindekDev/Jail/blob/main/Documentation/Start-Coding/HelloWorld.md)       |
 | [Building from source](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Building.md) | [Comments](https://github.com/SolindekDev/Jail/blob/main/Documentation/Start-Coding/Comments.md)       |
+| | [Variables](https://github.com/SolindekDev/Jail/blob/main/Documentation/Start-Coding/Variables.md)
