@@ -5,6 +5,7 @@ const (
 	KEYWORD_RET      string = "ret"
 	KEYWORD_FUNCTION string = "space"
 	KEYWORD_END      string = "end"
+	KEYWORD_VARIABLE string = "var"
 
 	KEYWORD_INT    string = "int"
 	KEYWORD_STRING string = "string"

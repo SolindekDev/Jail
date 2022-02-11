@@ -17,17 +17,18 @@ const (
 	BLOCK_BRACKETS_CLOSE
 	NIL
 	MATH
+	EQUALS
 )
 
 const (
-	PLUS_TOKEN     = "+"
-	MINUS_TOKEN    = "-"
-	DIVIDE_TOKEN   = "/"
-	MULTIPLY_TOKEN = "*"
-	MODULUS_TOKEN  = "%"
-
+	PLUS_TOKEN                 = "+"
+	MINUS_TOKEN                = "-"
+	DIVIDE_TOKEN               = "/"
+	MULTIPLY_TOKEN             = "*"
+	MODULUS_TOKEN              = "%"
 	BLOCK_BRACKETS_OPEN_TOKEN  = "["
 	BLOCK_BRACKETS_CLOSE_TOKEN = "]"
+	EQUALS_TOKEN               = "="
 )
 
 type Position struct {

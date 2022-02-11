@@ -23,8 +23,31 @@ type Parser struct {
 const (
 	OPCODE_MATH int = iota
 	OPCODE_PUTS_STRING
+	OPCODE_PUTS_MATH
+	OPCODE_PUTS_IDENTIFIER
+	OPCODE_PUTS_VARIABLE
 	OPCODE_RETURN_NUMBER
+	OPCODE_VARIABLE_DECLARE_MATH
+	OPCODE_VARIABLE_DECLARE_STRING
 )
+
+func OpCode_Puts_Variable(variableName string) OpCode {
+	args := []string{variableName}
+
+	return create_opcode(OPCODE_PUTS_VARIABLE, args)
+}
+
+func OpCode_Variable_Declare_String(variableName string, variableValue string) OpCode {
+	args := []string{variableName, variableValue}
+
+	return create_opcode(OPCODE_VARIABLE_DECLARE_STRING, args)
+}
+
+func OpCode_Variable_Declare_Math(variableName string, variableValue string) OpCode {
+	args := []string{variableName, variableValue}
+
+	return create_opcode(OPCODE_VARIABLE_DECLARE_MATH, args)
+}
 
 func create_opcode(opcode int, args []string) OpCode {
 	var opcode_ OpCode
@@ -38,6 +61,18 @@ func OpCode_Puts(putValue string) OpCode {
 	args := []string{putValue}
 
 	return create_opcode(OPCODE_PUTS_STRING, args)
+}
+
+func OpCode_Puts_Math(putValue string) OpCode {
+	args := []string{putValue}
+
+	return create_opcode(OPCODE_PUTS_MATH, args)
+}
+
+func OpCode_Puts_Identifier(putValue string) OpCode {
+	args := []string{putValue}
+
+	return create_opcode(OPCODE_PUTS_IDENTIFIER, args)
 }
 
 func OpCode_Return(return_num float64) OpCode {

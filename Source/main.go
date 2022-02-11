@@ -35,10 +35,18 @@ func input() {
 	var reader = bufio.NewReader(os.Stdin)
 	_input, _ := reader.ReadString('\n')
 
+	// now1 := time.Now()
+
 	var lexer Lexer = lexer_init(_input, "Input")
 	lexer = refactor_tokens_math(lexer)
 	var parser Parser = parser_init(lexer, "Input")
 	eval_init(parser)
+
+	// now2 := time.Now()
+
+	// fmt.Printf("%d nanoseconds\n\n", now2.Nanosecond()-now1.Nanosecond())
+	// fmt.Printf("%d seconds\n\n", now2.Second()-now1.Second())
+
 	UNUSED(parser)
 
 	input()
@@ -52,14 +60,14 @@ func main() {
 		input()
 	} else {
 		if argv[1] == "--help" || argv[1] == "--h" || argv[1] == "-h" || argv[1] == "-help" {
-			fmt.Println("Joule - Interpreter programming language created in GoLang.\n\t- --help - Show this\n\t- --version - Show version\n\t- <filename.j> - Interpreter a file")
+			fmt.Println("Jail - Interpreter programming language created in GoLang.\n\t- --help - Show this\n\t- --version - Show version\n\t- <filename.j> - Interpreter a file")
 			os.Exit(SuccesCode)
 		}
 
 		var fileexst bool = file_exists(argv[1])
 
 		if fileexst == false {
-			fmt.Println(argv[1] + " <-- Ten plik nie istnieje")
+			fmt.Println(argv[1] + " <--- This file not exists")
 			os.Exit(FailedCode)
 		}
 

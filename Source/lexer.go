@@ -33,6 +33,7 @@ func lexer_init(value string, filename string) Lexer {
 			lexer_row++
 			lexer_col = 0
 			lexer_comments = false
+			lexer_space = true
 		} else if ac == "#" {
 			if lexer_string == true {
 				lexer.tokens[len(lexer.tokens)-1].value += ac
@@ -121,6 +122,8 @@ func lexer_init(value string, filename string) Lexer {
 			lexer.tokens = append(lexer.tokens, create_token(filename, BLOCK_BRACKETS_OPEN_TOKEN, BLOCK_BRACKETS_OPEN, lexer_row, lexer_col))
 		} else if ac == BLOCK_BRACKETS_CLOSE_TOKEN {
 			lexer.tokens = append(lexer.tokens, create_token(filename, BLOCK_BRACKETS_CLOSE_TOKEN, BLOCK_BRACKETS_CLOSE, lexer_row, lexer_col))
+		} else if ac == EQUALS_TOKEN {
+			lexer.tokens = append(lexer.tokens, create_token(filename, EQUALS_TOKEN, EQUALS, lexer_row, lexer_col))
 		} else if value[i] == 13 {
 			continue
 		} else if ac == "." {

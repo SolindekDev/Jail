@@ -11,14 +11,19 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
 - [x] Add modulus operation
 - [x] Add Identifier support (keywords)
 - [x] Printing out program 
-- [ ] Add multi line comments
-- [ ] Optimize Math operations
-- [ ] More type of data can be printed by `puts` keyword
+- [x] Add multi line comments
+- [x] Optimize Math operations
+- [x] More type of data can be printed by `puts` keyword
   - [x] String
-  - [ ] Math operations
-  - [ ] Int
-  - [ ] Float
-  - [ ] Keyword
+  - [x] Math operations
+  - [x] Int
+  - [x] Float
+  - [x] Keyword
+- [x] Variables
+  - [x] Decalre variable
+  - [] Change value of variable (Soon added)
+- [ ] Functions
+- [ ] Includes
 # Folders
 - **Source** - Source of interpreter
 - **Examples** - Examples of Jail language
