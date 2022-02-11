@@ -12,13 +12,13 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
 - [x] Add Identifier support (keywords)
 - [x] Printing out program 
 - [ ] Add multi line comments
-- [.] Optimize Math operations
-- [.] More type of data can be printed by `puts` keyword
+- [ ] Optimize Math operations
+- [ ] More type of data can be printed by `puts` keyword
   - [x] String
-  - [.] Math operations
-  - [.] Int
-  - [.] Float
-  - [.] Keyword
+  - [ ] Math operations
+  - [ ] Int
+  - [ ] Float
+  - [ ] Keyword
 # Folders
 - **Source** - Source of interpreter
 - **Examples** - Examples of Jail language
