@@ -1,5 +1,7 @@
 # Jail
-Jail programming language 
+**Jail** is a dynamic typed interpreter programming language writen in GoLang..  <br><br>
+# Documentation
+If you more interested in Jail or you want to learn Jail go and check our [Documentation](https://github.com/SolindekDev/Jail/blob/main/Documentation/Introduction.md) 
 # TODO
 - [x] Simple math interpreter
 - [x] Add float support
