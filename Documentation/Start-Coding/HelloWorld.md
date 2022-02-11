@@ -3,7 +3,7 @@
 Let's try to write our first code in Jail!
 
 First, we need The Jail Programming  Language installed
-if you do not know how to do it, we recommend that you read the guide on [**Downloading Jail**](https://github.com/SolindekDev/Jail/blob/main/Documentation/Introduction.md) 
+if you do not know how to do it, we recommend that you read the guide on [**Downloading Jail**](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Download.md) 
 
 After installing Jail, you need to create the **.jail** file
 For example, **helloworld.jail**
