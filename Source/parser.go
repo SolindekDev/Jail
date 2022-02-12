@@ -120,6 +120,9 @@ func parser_init(lexer Lexer, filename string) Parser {
 
 		if lexer.tokens[i].type_token == IDENTIFIER {
 			if lexer.tokens[i].value == KEYWORD_PUTS {
+				/*
+					Code for puts keyword - printing the value
+				*/
 				if len(lexer.tokens) > i+1 {
 					if lexer.tokens[i+1].type_token == STRING {
 						parser.opcodes = append(parser.opcodes, OpCode_Puts(lexer.tokens[i+1].value))
@@ -144,6 +147,13 @@ func parser_init(lexer Lexer, filename string) Parser {
 					error = true
 				}
 			} else if lexer.tokens[i].value == KEYWORD_VARIABLE {
+				/*
+					Code for declaring variable
+
+
+					Ugh this code is sooo ugly... But it works 🦄🦄
+
+				*/
 				if len(lexer.tokens) > i+1 {
 					if lexer.tokens[i+1].type_token == IDENTIFIER {
 						if variable_exists(lexer.tokens[i+1].value, variables) == false {
@@ -187,6 +197,9 @@ func parser_init(lexer Lexer, filename string) Parser {
 					error = true
 				}
 			} else {
+				/*
+					Code for changing the variable value
+				*/
 				if variable_exists(lexer.tokens[i].value, variables) == false {
 					error_print(lexer.tokens[i], lexer.tokens[i].value+" is not defined", "ReferenceError", filename)
 					error = true
