@@ -23,7 +23,7 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
   - [x] Keyword
 - [x] Variables
   - [x] Decalre variable
-  - [] Change value of variable (Soon added)
+  - [ ] Change value of variable (Soon added)
 - [ ] Functions
 - [ ] Includes
 # Folders
