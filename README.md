@@ -32,5 +32,6 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
 - **Documentation** - Documentation of Jail Language
   - **Download** - Documentation about downloading jail interpreter
   - **Start-Coding** - Documentation about jail syntax and about coding in jail 
-# Contribuiting
+# Contributing
+If you wanna help in Jail Programming Language write to me on [Discord](https://discord.com/users/644446151210172447) or on other platforms [Contact With Solindek](https://solindek.tech/contact.html)
 
