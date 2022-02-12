@@ -29,7 +29,14 @@ const (
 	OPCODE_RETURN_NUMBER
 	OPCODE_VARIABLE_DECLARE_MATH
 	OPCODE_VARIABLE_DECLARE_STRING
+	OPCODE_CHANGE_VALUE_VARIABLE
 )
+
+func OpCode_Change_Value_Varaiable(variableName string, newValue string) OpCode {
+	args := []string{variableName, newValue}
+
+	return create_opcode(OPCODE_CHANGE_VALUE_VARIABLE, args)
+}
 
 func OpCode_Puts_Variable(variableName string) OpCode {
 	args := []string{variableName}
