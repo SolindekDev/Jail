@@ -23,8 +23,12 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
   - [x] Keyword
 - [x] Variables
   - [x] Decalre variable
-  - [ ] Change value of variable (Soon added)
+  - [x] Change value of variable (Soon added)
+- [ ] Pretty code 😼
 - [ ] Functions
+  - [ ] Declare functions
+  - [ ] Arguments
+  - [ ] Call functions
 - [ ] Includes
 # Folders
 - **Source** - Source of interpreter

@@ -54,6 +54,13 @@ func eval_init(parser Parser) {
 			fmt.Printf("%v\n", r)
 		case OPCODE_RETURN_NUMBER:
 			last_calc = fmt.Sprint(parser.opcodes[i].args[0])
+		case OPCODE_CHANGE_VALUE_VARIABLE_STRING:
+			index_var := get_variable_index(parser.opcodes[i].args[0], variable)
+			variable[index_var-1].variableValue = fmt.Sprint(parser.opcodes[i].args[1])
+		case OPCODE_CHANGE_VALUE_VARIABLE_MATH:
+			r := math_calc(parser.opcodes[i].args[1])
+			index_var := get_variable_index(parser.opcodes[i].args[0], variable)
+			variable[index_var-1].variableValue = fmt.Sprint(r)
 		}
 	}
 

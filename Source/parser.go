@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -63,14 +64,26 @@ func create_variable(variableName string, variableValue string) Variable {
 	return var_
 }
 
-func found_variable(name string, variables []Variable) Variable {
+func found_variable(variableName string, variables []Variable) Variable {
 	for _, v := range variables {
-		if v.variableName == name {
+		if v.variableName == variableName {
 			return v
 		}
 	}
 
 	return create_variable("variable_not_found111111111", "1083921nsa")
+}
+
+func get_variable_index(variableName string, variables []Variable) int {
+	i := 0
+	for _, v := range variables {
+		i++
+		if v.variableName == variableName {
+			return i
+		}
+	}
+
+	return -1
 }
 
 func print_out_parser(parser Parser) {
@@ -172,6 +185,35 @@ func parser_init(lexer Lexer, filename string) Parser {
 				} else {
 					error_print(lexer.tokens[i], "Expected an name of variable", "SyntaxError", filename)
 					error = true
+				}
+			} else {
+				if variable_exists(lexer.tokens[i].value, variables) == false {
+					error_print(lexer.tokens[i], lexer.tokens[i].value+" is not defined", "ReferenceError", filename)
+					error = true
+				} else {
+					if len(lexer.tokens) > i+1 {
+						if lexer.tokens[i+1].type_token == EQUALS {
+							if len(lexer.tokens) > i+2 {
+								if lexer.tokens[i+2].type_token == MATH {
+									index_var := get_variable_index(lexer.tokens[i].value, variables)
+
+									variables[index_var].variableValue = fmt.Sprint(lexer.tokens[i+2].type_token)
+
+									parser.opcodes = append(parser.opcodes, OpCode_Change_Value_Varaiable_Math(lexer.tokens[i].value, lexer.tokens[i+2].value))
+									freeze += 2
+								} else if lexer.tokens[i+2].type_token == STRING {
+									index_var := get_variable_index(lexer.tokens[i].value, variables)
+									variables[index_var-1].variableValue = fmt.Sprint(lexer.tokens[i+2].type_token)
+
+									parser.opcodes = append(parser.opcodes, OpCode_Change_Value_Varaiable_String(lexer.tokens[i].value, lexer.tokens[i+2].value))
+									freeze += 2
+								} else {
+									error_print(lexer.tokens[i], "Unexpected type of token to put into variable", "TypeError", filename)
+									error = true
+								}
+							}
+						}
+					}
 				}
 			}
 		} else if lexer.tokens[i].type_token == MATH {
