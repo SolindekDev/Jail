@@ -1,4 +1,4 @@
-![Stars](https://img.shields.io/github/stars/solindekdev/jail) ![Lang](https://img.shields.io/github/languages/top/solindekdev/jail) ![wakatime](https://wakatime.com/badge/user/418b9796-c879-4295-8b96-b20570a5f28b/project/e4969ecb-5fee-4250-bba8-c371ba672b95.svg)
+![Issues](https://img.shields.io/bitbucket/issues/solindekdev/jail) ![Stars](https://img.shields.io/github/stars/solindekdev/jail) ![Lang](https://img.shields.io/github/languages/top/solindekdev/jail) ![wakatime](https://wakatime.com/badge/user/418b9796-c879-4295-8b96-b20570a5f28b/project/e4969ecb-5fee-4250-bba8-c371ba672b95.svg)
 # Jail Programming Language
 
 **Jail** is a dynamic typed interpreter programming language writen in GoLang..  
