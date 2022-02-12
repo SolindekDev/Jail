@@ -24,6 +24,7 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
 - [x] Variables
   - [x] Decalre variable
   - [x] Change value of variable (Soon added)
+  - [ ] Operations on variables
 - [ ] Pretty code 😼
 - [ ] Functions
   - [ ] Declare functions
