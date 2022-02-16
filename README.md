@@ -25,6 +25,12 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
   - [x] Decalre variable
   - [x] Change value of variable (Soon added)
   - [ ] Operations on variables
+    - [ ] Increment
+    - [ ] Decrement
+    - [ ] Add to variable value
+    - [ ] Minus to variable value
+    - [ ] Divide to variable value
+    - [ ] Multiply to variable value
 - [ ] Pretty code 😼
 - [ ] Functions
   - [ ] Declare functions
