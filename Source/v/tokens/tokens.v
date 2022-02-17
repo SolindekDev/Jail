@@ -1,5 +1,10 @@
 module tokens
 
+pub const (
+	numbers_constants = "0123456789"
+	letters_constants = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_?@"
+)
+
 pub enum Types {
 	number = 0
     float
@@ -16,7 +21,7 @@ pub enum Types {
 	null
 }
 
-const (
+pub const (
 	token_name_number      = "number"
 	token_name_float       = "float"
 	token_name_string      = "string"
@@ -33,12 +38,13 @@ const (
 )
 
 struct Position {
-	row int
-	col int
+	pub mut:
+		row int
+		col int
 }
 
 struct Token {
-	mut:
+	pub mut:
 		value       string
 		filename    string
 		type_token  Types
@@ -75,18 +81,16 @@ pub fn get_string_from_token_type(type_token Types) string {
     }
 }
 
-pub fn get_one_char(c1 rune) Types {
+pub fn get_one_char(c1 string) Types {
 	match c1 {
-		`\n` { return Types.newline }
-		`(`  { return Types.lpar }
-        `)`  { return Types.rpar }
-        `+`  { return Types.plus }
-        `-`  { return Types.minus }
-        `/`  { return Types.divide }
-        `*`  { return Types.multiply }
+		"\n" { return Types.newline }
+		"("  { return Types.lpar }
+        ")"  { return Types.rpar }
+        "+"  { return Types.plus }
+        "-"  { return Types.minus }
+        "/"  { return Types.divide }
+        "*"  { return Types.multiply }
 		else {
-			// Unreachable code or compiler error.
-			println("Unreachable code or compiler error!")
 			return Types.null
 		}
 	}
