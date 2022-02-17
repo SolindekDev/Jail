@@ -1,12 +1,14 @@
 module tokens
 
+// just constants lmao
 pub const (
 	numbers_constants = "0123456789"
 	letters_constants = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_?@"
 )
 
+// enum that represents the types in language
 pub enum Types {
-	number = 0
+	int = 0
     float
     string_
     identifier
@@ -21,28 +23,31 @@ pub enum Types {
 	null
 }
 
+// string representation of Types enum
 pub const (
-	token_name_number      = "number"
-	token_name_float       = "float"
-	token_name_string      = "string"
-	token_name_identifier  = "identifier"
-	token_name_newline     = "newline"
-	token_name_lpar   	   = "lpar"
-	token_name_rpar        = "rpar"
-	token_name_plus        = "plus"
-	token_name_minus       = "minus"
-	token_name_divide      = "divide"
-	token_name_multiply    = "multiply"
-	token_name_eof		   = "eof"
-	token_name_null 	   = "null"
+	token_name_int         = "Int"
+	token_name_float       = "Float"
+	token_name_string      = "String"
+	token_name_identifier  = "Identifier"
+	token_name_newline     = "Newline"
+	token_name_lpar   	   = "Lpar"
+	token_name_rpar        = "Rpar"
+	token_name_plus        = "Plus"
+	token_name_minus       = "Minus"
+	token_name_divide      = "Divide"
+	token_name_multiply    = "Multiply"
+	token_name_eof		   = "Eof"
+	token_name_null 	   = "Null"
 )
 
+// Structure of token poisition
 struct Position {
 	pub mut:
 		row int
 		col int
 }
 
+// Stucture of token
 struct Token {
 	pub mut:
 		value       string
@@ -51,6 +56,7 @@ struct Token {
 		pos         Position
 }
 
+// Function for fast creating tokens
 pub fn create_token(filename string, value string, type_token Types, row int, col int) Token {
 	mut token := Token{}
 	mut pos := Position{row, col}
@@ -63,9 +69,10 @@ pub fn create_token(filename string, value string, type_token Types, row int, co
 	return token
 }
 
+// Function for get the string representation of index type enum.
 pub fn get_string_from_token_type(type_token Types) string { 
     match type_token {
-        .number      { return token_name_number }
+        .int         { return token_name_int }
         .float       { return token_name_float }
         .string_     { return token_name_string }
         .identifier  { return token_name_identifier }
@@ -81,6 +88,28 @@ pub fn get_string_from_token_type(type_token Types) string {
     }
 }
 
+// Function to print out token object
+pub fn print_out_token(token Token) {
+	type_ := get_string_from_token_type(token.type_token)
+	println("$type_:$token.value")
+}
+
+// Function for get last token from array with out any errors.
+pub fn get_last_token(tokens[] Token, filename string) Token {
+	if tokens.len == 0 {
+		return create_token(
+			filename,
+			"NIL",
+			Types.null,
+			0, 
+			0
+		)
+	} else {
+		return tokens[tokens.len - 1]
+	}
+}
+
+// Function that search that the value is equals to any of tokens \ I don't know how to say it lmao
 pub fn get_one_char(c1 string) Types {
 	match c1 {
 		"\n" { return Types.newline }
@@ -94,9 +123,4 @@ pub fn get_one_char(c1 string) Types {
 			return Types.null
 		}
 	}
-}
-
-pub fn print_out_token(token Token) {
-	type_ := get_string_from_token_type(token.type_token)
-	println("$type_:$token.value")
 }

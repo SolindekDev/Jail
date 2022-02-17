@@ -7,7 +7,7 @@ If you more interested in Jail or you want to learn Jail go and check our [Docum
 # Download
 How to download interpreter of Jail? There a page about this topic [Here!](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Download.md)
 # TODO
-- [x] Simple math interpreter
+<!-- - [x] Simple math interpreter
 - [x] Add float support
 - [x] Sequence of operations
 - [x] Add modulus operation
@@ -36,7 +36,12 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
   - [ ] Declare functions
   - [ ] Arguments
   - [ ] Call functions
-- [ ] Includes
+- [ ] Includes -->
+- [x] Re-write to V 
+- [x] Lexer 
+- [ ] AST
+- [ ] Eval
+- [ ] Easy math interpreter
 # Folders
 - **Source** - Source of interpreter
 - **Examples** - Examples of Jail language
