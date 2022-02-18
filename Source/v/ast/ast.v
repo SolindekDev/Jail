@@ -124,7 +124,7 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 				}		
 			}
 		} else if tokens_[i].type_token == tokens.Types.identifier { 
-			if 
+			// if 
 		} else if tokens_[i].type_token == tokens.Types.newline { 
 			number = false
 		}
