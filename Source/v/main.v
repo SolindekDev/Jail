@@ -1,3 +1,10 @@
+/*
+    Jail Programming Language Copyright (C) 2022 SolindekDev
+
+	Contribuitors:
+		https://github.com/SolindekDev/Jail/edit/main/contributors.md
+*/
+
 import os
 import time
 import lexer

@@ -6,6 +6,13 @@ pub const (
 	letters_constants = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_?@"
 )
 
+/*
+    Jail Programming Language Copyright (C) 2022 SolindekDev
+
+	Contribuitors:
+		https://github.com/SolindekDev/Jail/edit/main/contributors.md
+*/
+
 // enum that represents the types in language
 pub enum Types {
 	number = 0
