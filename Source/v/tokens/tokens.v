@@ -8,7 +8,7 @@ pub const (
 
 // enum that represents the types in language
 pub enum Types {
-	int = 0
+	number = 0
     float
     string_
     identifier
@@ -18,6 +18,7 @@ pub enum Types {
     plus
     minus
     divide
+	equals
     multiply
 	eof
 	null
@@ -25,7 +26,7 @@ pub enum Types {
 
 // string representation of Types enum
 pub const (
-	token_name_int         = "Int"
+	token_name_number      = "Number"
 	token_name_float       = "Float"
 	token_name_string      = "String"
 	token_name_identifier  = "Identifier"
@@ -35,6 +36,7 @@ pub const (
 	token_name_plus        = "Plus"
 	token_name_minus       = "Minus"
 	token_name_divide      = "Divide"
+	token_name_equals      = "Equals"
 	token_name_multiply    = "Multiply"
 	token_name_eof		   = "Eof"
 	token_name_null 	   = "Null"
@@ -72,7 +74,7 @@ pub fn create_token(filename string, value string, type_token Types, row int, co
 // Function for get the string representation of index type enum.
 pub fn get_string_from_token_type(type_token Types) string { 
     match type_token {
-        .int         { return token_name_int }
+        .number		 { return token_name_number }
         .float       { return token_name_float }
         .string_     { return token_name_string }
         .identifier  { return token_name_identifier }
@@ -83,6 +85,7 @@ pub fn get_string_from_token_type(type_token Types) string {
         .minus       { return token_name_minus }
         .divide      { return token_name_divide }
         .multiply    { return token_name_multiply }
+        .equals      { return token_name_equals }
         .eof         { return token_name_eof }
         .null        { return token_name_null }
     }
@@ -119,8 +122,16 @@ pub fn get_one_char(c1 string) Types {
         "-"  { return Types.minus }
         "/"  { return Types.divide }
         "*"  { return Types.multiply }
+        "="  { return Types.equals }
 		else {
 			return Types.null
 		}
+	}
+}
+
+// Function that print out all tokens from lexer.
+pub fn print_out_all_tokens(tokens[] Token) {
+	for i := 0; i < tokens.len; i++ {
+		print_out_token(tokens[i])
 	}
 }
