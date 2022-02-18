@@ -7,14 +7,16 @@
 
 module lexer
 
+/* Import some packages */
 import tokens
 import error
 
 pub fn lexer(value string, filename string) []tokens.Token {
-	mut tokens_ := []tokens.Token{}
+	mut tokens_ := []tokens.Token{} // Array of tokens
 
 	mut error_ := false
 
+	/* Some global lexer variables */
 	mut lexer_row 			 := 1
 	mut lexer_col 			 := 0
 	mut lexer_par            := 0 
@@ -23,12 +25,12 @@ pub fn lexer(value string, filename string) []tokens.Token {
 	mut lexer_space 		 := false
 	mut lexer_string 		 := false
 
-	for i := 0; i < value.len; i++ {
-		ac := value[i].ascii_str()
-		ac_ := value[i]
-		last := tokens.get_last_token(tokens_, filename)
+	for i := 0; i < value.len; i++ { // loop through file value
+		ac := value[i].ascii_str() // convert byte to ascii string
+		ac_ := value[i] // just byte.
+		last := tokens.get_last_token(tokens_, filename) // get last token from array if last token not found this return null type token
 
-		if ac == "\n" {
+		if ac == "\n" { // if actual char equals new line (\n)
 			lexer_space = true
 			lexer_comments = false
 			lexer_row++
@@ -40,7 +42,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 				lexer_row,
 				lexer_col
 			)	
-		} else if ac == "#" {
+		} else if ac == "#" { // if actual char equals "#"
 			if lexer_string == true {
 				tokens_[tokens_.len - 1].value += ac
 			} else {
@@ -48,7 +50,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_comments = true
 				}
 			}
-		} else if ac == "$" {
+		} else if ac == "$" { // if actual char equals "$"
 			if lexer_string == true {
 				tokens_[tokens_.len - 1].value += ac
 			} else {
@@ -58,9 +60,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_comments_multi = false
 				}
 			}
-		} else if lexer_comments == true || lexer_comments_multi == true {
+		} else if lexer_comments == true || lexer_comments_multi == true { // if comments are on
 			continue
-		} else if ac_ == 34 {
+		} else if ac_ == 34 { // if actual char equals "
 			if lexer_string == true {
 				lexer_string = false
 			} else {
@@ -73,11 +75,11 @@ pub fn lexer(value string, filename string) []tokens.Token {
 				)	
 				lexer_string = true
 			}
-		} else if lexer_string == true {
+		} else if lexer_string == true { // if string is open
 			tokens_[tokens_.len - 1].value += ac
 		} else if ac == " " {
 			lexer_space = true
-		} else if tokens.get_one_char(ac) != tokens.Types.null {
+		} else if tokens.get_one_char(ac) != tokens.Types.null { // if char is +=-*/()
 			if tokens.get_one_char(ac) == tokens.Types.lpar || 
 			   tokens.get_one_char(ac) == tokens.Types.rpar { 
 				if tokens.get_one_char(ac) == tokens.Types.lpar {
@@ -111,7 +113,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 				)
 				lexer_space = false
 			}
-		} else if tokens.letters_constants.contains_any(ac) == true {
+		} else if tokens.letters_constants.contains_any(ac) == true { // if actual char is identifier
 			if last.type_token == tokens.Types.null {
 				tokens_ << tokens.create_token(
 					filename, 
@@ -147,7 +149,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_space = false
 				}
 			}
-		} else if tokens.numbers_constants.contains_any(ac) == true {
+		} else if tokens.numbers_constants.contains_any(ac) == true { // if actual char is number
 			if last.type_token == tokens.Types.null {
 				tokens_ << tokens.create_token(
 					filename, 
@@ -188,7 +190,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_space = false
 				}
 			}
-		} else if ac == "." {
+		} else if ac == "." { // if actual token is .
 			if last.type_token == tokens.Types.null {
 				tokens_ << tokens.create_token(
 					filename, 
@@ -223,7 +225,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_space = false
 				}
 			}
-		} else {
+		} else { // Unsupported character
 			error.error_print_lexer(lexer_row, lexer_col, filename, "Unsupported character: \""+ac+"\"", "SyntaxError")
 			error_ = true
 		}

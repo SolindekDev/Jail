@@ -5,6 +5,7 @@
 		https://github.com/SolindekDev/Jail/edit/main/contributors.md
 */
 
+/* Import some packages */
 module error
 
 /*
@@ -22,5 +23,5 @@ pub fn error_print_lexer(
 	body string,
 	title string
 ) {
-	println("\e[1;33m$filename:$row:$col: \e[0m\e[1;91m$title: \e[0m$body")
+	println("\e[1;33m$filename:$row:$col: \e[0m\e[1;91m$title: \e[0m$body") // Print out error message
 }

@@ -7,6 +7,7 @@
 
 module ast
 
+/* Import some packages */
 import tokens
 import error
 
