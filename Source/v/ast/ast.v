@@ -18,6 +18,8 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 
 		if tokens_[i].type_token == tokens.Types.float     || 
 		   tokens_[i].type_token == tokens.Types.number    ||
+		   tokens_[i].type_token == tokens.Types.lpar      ||
+		   tokens_[i].type_token == tokens.Types.rpar      ||
 		   tokens_[i].type_token == tokens.Types.plus      ||
 		   tokens_[i].type_token == tokens.Types.minus     ||
 		   tokens_[i].type_token == tokens.Types.divide    ||
@@ -42,7 +44,7 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 						  tokens_[i].type_token == tokens.Types.minus     ||
 						  tokens_[i].type_token == tokens.Types.divide    ||
 						  tokens_[i].type_token == tokens.Types.multiply { 
-							error.error_print_lexer(
+								error.error_print_lexer(
 									tokens_[i].pos.row,
 									tokens_[i].pos.col,
 									tokens_[i].filename,
@@ -50,7 +52,10 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 									"SyntaxError"
 								)
 								errors=true
-						} else {
+						} else if tokens_[i].type_token == tokens.Types.lpar ||
+						          tokens_[i].type_token == tokens.Types.rpar {
+							
+						} else
 							main_ast.body[main_ast.body.len-1].body_tokens << tokens_[i]
 						}
 				   }
@@ -68,6 +73,9 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 						"SyntaxError"
 					)
 					errors=true
+				} else if tokens_[i].type_token == tokens.Types.lpar ||
+						  tokens_[i].type_token == tokens.Types.rpar {
+							
 				} else {
 					body_tokens := [tokens_[i]]
 					main_ast.body << create_node_ast(

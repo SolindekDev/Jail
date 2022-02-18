@@ -23,7 +23,7 @@ type float   = f64;
 type ufloat  = f32;
 
 fn main() {
-	let calculations_232128: float = (1+1) as float;
-	let calculations_1954952: float = (1+2*3/4) as float;
-	let calculations_1099688: float = (9+221) as float;
+	let calculations_1859215: float = (1+1) as float;
+	let calculations_1045232: float = (1+2*3/4) as float;
+	let calculations_144037: float = (9+221) as float;
 }

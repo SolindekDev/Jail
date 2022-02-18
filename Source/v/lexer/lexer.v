@@ -234,7 +234,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 		exit(1) // 1 is a failed code
 	}
 
-	// tokens.print_out_all_tokens(tokens_)
+	tokens.print_out_all_tokens(tokens_)
 
 	return tokens_
 }
