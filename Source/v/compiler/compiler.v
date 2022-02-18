@@ -3,6 +3,7 @@ module compiler
 import os
 import rand
 import ast
+import tokens
 
 pub fn str_to_byte(str string) []byte {
 	mut bytes := []byte{}
@@ -48,10 +49,16 @@ use std::process;\n")
 #[warn(while_true)]
 #[warn(unused_unsafe)]\n")
 	writef(mut out, "
+type byte    = u8;
+type sbyte   = i8;
+type ushort  = u16;
+type short   = i16;
+type uint    = u32;
 type int     = i32;
-type uint    = i8;
-type float   = f64;
-type ufloat  = f32;\n")
+type ulong   = u64;
+type long    = i64;
+type float   = f32;
+type double  = f64;\n")
 	writef(mut out, "
 fn main() {
 ")
@@ -63,11 +70,16 @@ fn main() {
 			mut operation := ""
 
 			for j := 0; j < body_tokens.len; j++ {
-				operation += body_tokens[j].value
+				if body_tokens[j].type_token == tokens.Types.number {
+					t := body_tokens[j].value
+					operation += "($t) as float"
+				} else {
+					operation += body_tokens[j].value
+				}
 			}
 
 			name := rand.i64_in_range(0, 2000000)
-			writef(mut out, "	let calculations_$name: float = ($operation) as float;\n")
+			writef(mut out, "	let calculations_$name: float = ($operation) as float;\n	println!(\"{}\", calculations_$name);\n")
 		}		
 	}
 	writef(mut out, "}")

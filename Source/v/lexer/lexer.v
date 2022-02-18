@@ -8,7 +8,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 
 	mut error_ := false
 
-	mut lexer_row 			 := 0
+	mut lexer_row 			 := 1
 	mut lexer_col 			 := 0
 	mut lexer_par            := 0 
 	mut lexer_comments       := false
@@ -234,7 +234,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 		exit(1) // 1 is a failed code
 	}
 
-	tokens.print_out_all_tokens(tokens_)
+	// tokens.print_out_all_tokens(tokens_)
 
 	return tokens_
 }

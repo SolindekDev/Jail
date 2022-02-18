@@ -27,8 +27,8 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 			if number == true {
 				if main_ast.body[main_ast.body.len-1].body_tokens[main_ast.body[main_ast.body.len-1].body_tokens.len-1].type_token == tokens.Types.number ||
 				   main_ast.body[main_ast.body.len-1].body_tokens[main_ast.body[main_ast.body.len-1].body_tokens.len-1].type_token == tokens.Types.float { 
-						if tokens_[i].type_token == tokens.Types.number || tokens_[i].type_token == tokens.Types.float { 
-							error.error_print_lexer(
+						if tokens_[i].type_token == tokens.Types.number || tokens_[i].type_token == tokens.Types.float {
+								error.error_print_lexer(
 									tokens_[i].pos.row,
 									tokens_[i].pos.col,
 									tokens_[i].filename,
@@ -44,18 +44,36 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 						  tokens_[i].type_token == tokens.Types.minus     ||
 						  tokens_[i].type_token == tokens.Types.divide    ||
 						  tokens_[i].type_token == tokens.Types.multiply { 
-								error.error_print_lexer(
-									tokens_[i].pos.row,
-									tokens_[i].pos.col,
-									tokens_[i].filename,
-									"Expected an number after an operator: " + tokens_[i].value,
-									"SyntaxError"
-								)
-								errors=true
+							  	last_t := main_ast.body[main_ast.body.len-1].body_tokens[main_ast.body[main_ast.body.len-1].body_tokens.len-1]
+							  // (1+2)*3/4
+							  	// if (main_ast.body[main_ast.body.len-1].body_tokens[main_ast.body[main_ast.body.len-1].body_tokens.len-1].type_token != tokens.Types.lpar) == false ||
+								//    (main_ast.body[main_ast.body.len-1].body_tokens[main_ast.body[main_ast.body.len-1].body_tokens.len-1].type_token != tokens.Types.rpar) == false {
+								// 	    println((main_ast.body[main_ast.body.len-1].body_tokens[main_ast.body[main_ast.body.len-1].body_tokens.len-1].type_token != tokens.Types.rpar) == false)
+								// 	    error.error_print_lexer(
+								// 			tokens_[i].pos.row,
+								// 			tokens_[i].pos.col,
+								// 			tokens_[i].filename,
+								// 			"Expected an number after an operator: " + tokens_[i].value,
+								// 			"SyntaxError"
+								// 		)
+								// 		errors=true	
+								//    }
+								if last_t.type_token == tokens.Types.rpar || last_t.type_token == tokens.Types.lpar { 
+									main_ast.body[main_ast.body.len-1].body_tokens << tokens_[i]
+								} else {
+									error.error_print_lexer(
+										tokens_[i].pos.row,
+										tokens_[i].pos.col,
+										tokens_[i].filename,
+										"Expected an number after an operator: " + tokens_[i].value,
+										"SyntaxError"
+									)
+									errors=true	
+								}
 						} else if tokens_[i].type_token == tokens.Types.lpar ||
 						          tokens_[i].type_token == tokens.Types.rpar {
-							
-						} else
+							main_ast.body[main_ast.body.len-1].body_tokens << tokens_[i]
+						} else {
 							main_ast.body[main_ast.body.len-1].body_tokens << tokens_[i]
 						}
 				   }
@@ -75,7 +93,25 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 					errors=true
 				} else if tokens_[i].type_token == tokens.Types.lpar ||
 						  tokens_[i].type_token == tokens.Types.rpar {
-							
+					if tokens_[i].type_token == tokens.Types.lpar {
+						body_tokens := [tokens_[i]]
+						main_ast.body << create_node_ast(
+							TypeExpressionAST.ast_math_operation,
+							[],
+							[],
+							body_tokens
+						)
+						number = true
+					} else {
+						body_tokens := [tokens_[i]]
+						main_ast.body << create_node_ast(
+							TypeExpressionAST.ast_math_operation,
+							[],
+							[],
+							body_tokens
+						)
+						number = true
+					}
 				} else {
 					body_tokens := [tokens_[i]]
 					main_ast.body << create_node_ast(
@@ -87,6 +123,8 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 					number = true
 				}		
 			}
+		} else if tokens_[i].type_token == tokens.Types.identifier { 
+			if 
 		} else if tokens_[i].type_token == tokens.Types.newline { 
 			number = false
 		}

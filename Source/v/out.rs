@@ -17,13 +17,18 @@ use std::process;
 #[warn(while_true)]
 #[warn(unused_unsafe)]
 
+type byte    = u8;
+type sbyte   = i8;
+type ushort  = u16;
+type short   = i16;
+type uint    = u32;
 type int     = i32;
-type uint    = i8;
-type float   = f64;
-type ufloat  = f32;
+type ulong   = u64;
+type long    = i64;
+type float   = f32;
+type double  = f64;
 
 fn main() {
-	let calculations_1859215: float = (1+1) as float;
-	let calculations_1045232: float = (1+2*3/4) as float;
-	let calculations_144037: float = (9+221) as float;
+	let calculations_1973779: float = (0.312+((2) as float+(2) as float)) as float;
+	println!("{}", calculations_1973779);
 }
