@@ -7,7 +7,7 @@ use std::io;
 use std::process;
 
 #[warn(unused_variables)]
-#[warn(unused_mut)]
+#[warn(unused_)]
 #[warn(unused_imports)]
 #[warn(unused_features)]
 #[warn(dead_code)]
@@ -29,6 +29,4 @@ type float   = f32;
 type double  = f64;
 
 fn main() {
-	let calculations_1973779: float = (0.312+((2) as float+(2) as float)) as float;
-	println!("{}", calculations_1973779);
 }

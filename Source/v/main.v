@@ -10,17 +10,37 @@ module main
 /* Import some packages */
 import os
 import time
+import json
 import lexer
 import ast
 import compiler
 
+struct ConfigurationJSON {
+	help_command     string
+	version_command  string
+}
+
 fn main() {
+	configuration_json_content := '{\n
+    "help_command": "Help command",
+    "version_command": "Version command"
+}'
+
 	if os.args.len < 2 {
 		/*
 			TODO: Shell
 		*/
 		println("TODO: Shell")
 	} else {
+		decode := json.decode(ConfigurationJSON, configuration_json_content)?
+
+		if os.args[1] == "help" { // Help command
+			println(decode.help_command)
+			exit(0) // Success code
+		} else if os.args[1] == "version" { // Version command
+			println(decode.version_command)
+			exit(0) // Success code
+		}
 		/* Open file */
 		mut f := os.open(os.args[1]) or {
 			println("ShellError: File not found or it not exists..")

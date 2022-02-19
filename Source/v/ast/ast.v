@@ -132,7 +132,9 @@ pub fn ast_init(tokens_[] tokens.Token) MainAST {
 				}		
 			}
 		} else if tokens_[i].type_token == tokens.Types.identifier { 
-			// if 
+			if tokens_[i].value == keyword_puts {
+				println("TODO: puts")
+			}
 		} else if tokens_[i].type_token == tokens.Types.newline { 
 			number = false
 		}

@@ -18,6 +18,7 @@ pub enum TypeAST {
 // TypeExpressionAST Enum
 pub enum TypeExpressionAST {
 	ast_math_operation = 0
+	ast_puts_build_in_function
 }
 
 // NodeAST Structure
