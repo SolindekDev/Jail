@@ -82,9 +82,6 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_row,
 					lexer_col
 				)
-			
-		//} else if lexer_string == true { // if string is open
-			//tokens_[tokens_.len - 1].value += ac
 		} else if ac == " " {
 			lexer_space = true
 		} else if tokens.get_one_char(ac) != tokens.Types.null { // if char is +=-*/()
