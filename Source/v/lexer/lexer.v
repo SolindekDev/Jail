@@ -26,8 +26,8 @@ pub fn lexer(value string, filename string) []tokens.Token {
 	mut lexer_string 		 := false
 
 	for i := 0; i < value.len; i++ { // loop through file value
-		ac := value[i].ascii_str() // convert byte to ascii string
-		ac_ := value[i] // just byte.
+		mut ac := value[i].ascii_str() // convert byte to ascii string
+		mut ac_ := value[i] // just byte.
 		last := tokens.get_last_token(tokens_, filename) // get last token from array if last token not found this return null type token
 
 		if ac == "\n" { // if actual char equals new line (\n)
@@ -63,20 +63,28 @@ pub fn lexer(value string, filename string) []tokens.Token {
 		} else if lexer_comments == true || lexer_comments_multi == true { // if comments are on
 			continue
 		} else if ac_ == 34 { // if actual char equals " or ' or ` yeah.. strings...
-			if lexer_string == true {
-				lexer_string = false
-			} else {
+				mut string_value := ""
+				for x := 0; x < value.len; x++ {
+					i++
+					ac = value[i].ascii_str()
+					ac_ = value[i]
+					if ac_ == 34{
+						break
+					} else {
+						string_value += ac
+					}
+				}
+				
 				tokens_ << tokens.create_token(
 					filename,
-					"",
+					string_value,
 					tokens.Types.string_,
 					lexer_row,
 					lexer_col
 				)
-				lexer_string = true
-			}
-		} else if lexer_string == true { // if string is open
-			tokens_[tokens_.len - 1].value += ac
+			
+		//} else if lexer_string == true { // if string is open
+			//tokens_[tokens_.len - 1].value += ac
 		} else if ac == " " {
 			lexer_space = true
 		} else if tokens.get_one_char(ac) != tokens.Types.null { // if char is +=-*/()
