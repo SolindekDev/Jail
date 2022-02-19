@@ -1,6 +1,6 @@
 # Jail Programming Language
 ## Note
-Dokumentation is currently being rewritten by [jedrek0429](https://github.com/jedrek0429).
+The documentation is currently being rewritten by [jedrek0429](https://github.com/jedrek0429) to [GitHub wiki](../../../wiki).
 ## Introduction
 **Jail** is a dynamic typed compiled programming language writen in V..  <br><br>
 It's designed for building console application, easy syntax and friendly community only help the less advanced programmmers.<br><br>
