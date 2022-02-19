@@ -19,7 +19,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 	/* Some global lexer variables */
 	mut lexer_row 			 := 1
 	mut lexer_col 			 := 0
-	mut lexer_par            := 0 
+	mut lexer_par            := 0
 	mut lexer_comments       := false
 	mut lexer_comments_multi := false
 	mut lexer_space 		 := false
@@ -41,7 +41,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 				tokens.Types.newline,
 				lexer_row,
 				lexer_col
-			)	
+			)
 		} else if ac == "#" { // if actual char equals "#"
 			if lexer_string == true {
 				tokens_[tokens_.len - 1].value += ac
@@ -62,7 +62,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 			}
 		} else if lexer_comments == true || lexer_comments_multi == true { // if comments are on
 			continue
-		} else if ac_ == 34 { // if actual char equals "
+		} else if ac_ == 34 { // if actual char equals " or ' or ` yeah.. strings...
 			if lexer_string == true {
 				lexer_string = false
 			} else {
@@ -72,7 +72,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					tokens.Types.string_,
 					lexer_row,
 					lexer_col
-				)	
+				)
 				lexer_string = true
 			}
 		} else if lexer_string == true { // if string is open
@@ -80,13 +80,13 @@ pub fn lexer(value string, filename string) []tokens.Token {
 		} else if ac == " " {
 			lexer_space = true
 		} else if tokens.get_one_char(ac) != tokens.Types.null { // if char is +=-*/()
-			if tokens.get_one_char(ac) == tokens.Types.lpar || 
-			   tokens.get_one_char(ac) == tokens.Types.rpar { 
+			if tokens.get_one_char(ac) == tokens.Types.lpar ||
+			   tokens.get_one_char(ac) == tokens.Types.rpar {
 				if tokens.get_one_char(ac) == tokens.Types.lpar {
 					tokens_ << tokens.create_token(
-						filename, 
-						ac, 
-						tokens.get_one_char(ac), 
+						filename,
+						ac,
+						tokens.get_one_char(ac),
 						lexer_row,
 						lexer_col
 					)
@@ -94,9 +94,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_space = false
 				} else {
 					tokens_ << tokens.create_token(
-						filename, 
-						ac, 
-						tokens.get_one_char(ac), 
+						filename,
+						ac,
+						tokens.get_one_char(ac),
 						lexer_row,
 						lexer_col
 					)
@@ -105,9 +105,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 				}
 			} else {
 				tokens_ << tokens.create_token(
-					filename, 
-					ac, 
-					tokens.get_one_char(ac), 
+					filename,
+					ac,
+					tokens.get_one_char(ac),
 					lexer_row,
 					lexer_col
 				)
@@ -116,9 +116,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 		} else if tokens.letters_constants.contains_any(ac) == true { // if actual char is identifier
 			if last.type_token == tokens.Types.null {
 				tokens_ << tokens.create_token(
-					filename, 
-					ac, 
-					tokens.Types.identifier, 
+					filename,
+					ac,
+					tokens.Types.identifier,
 					lexer_row,
 					lexer_col
 				)
@@ -130,9 +130,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 						lexer_space = false
 					} else {
 						tokens_ << tokens.create_token(
-							filename, 
-							ac, 
-							tokens.Types.identifier, 
+							filename,
+							ac,
+							tokens.Types.identifier,
 							lexer_row,
 							lexer_col
 						)
@@ -140,9 +140,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					}
 				} else {
 					tokens_ << tokens.create_token(
-						filename, 
-						ac, 
-						tokens.Types.identifier, 
+						filename,
+						ac,
+						tokens.Types.identifier,
 						lexer_row,
 						lexer_col
 					)
@@ -152,9 +152,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 		} else if tokens.numbers_constants.contains_any(ac) == true { // if actual char is number
 			if last.type_token == tokens.Types.null {
 				tokens_ << tokens.create_token(
-					filename, 
-					ac, 
-					tokens.Types.number, 
+					filename,
+					ac,
+					tokens.Types.number,
 					lexer_row,
 					lexer_col
 				)
@@ -171,9 +171,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 						tokens_[tokens_.len-1].type_token = tokens.Types.identifier
 					} else {
 						tokens_ << tokens.create_token(
-							filename, 
-							ac, 
-							tokens.Types.number, 
+							filename,
+							ac,
+							tokens.Types.number,
 							lexer_row,
 							lexer_col
 						)
@@ -181,9 +181,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					}
 				} else {
 					tokens_ << tokens.create_token(
-						filename, 
-						ac, 
-						tokens.Types.number, 
+						filename,
+						ac,
+						tokens.Types.number,
 						lexer_row,
 						lexer_col
 					)
@@ -193,9 +193,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 		} else if ac == "." { // if actual token is .
 			if last.type_token == tokens.Types.null {
 				tokens_ << tokens.create_token(
-					filename, 
-					"0.", 
-					tokens.Types.float, 
+					filename,
+					"0.",
+					tokens.Types.float,
 					lexer_row,
 					lexer_col
 				)
@@ -216,9 +216,9 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					}
 				} else {
 					tokens_ << tokens.create_token(
-						filename, 
-						"0.", 
-						tokens.Types.float, 
+						filename,
+						"0.",
+						tokens.Types.float,
 						lexer_row,
 						lexer_col
 					)
@@ -230,8 +230,8 @@ pub fn lexer(value string, filename string) []tokens.Token {
 			error_ = true
 		}
 
-		lexer_col ++ 
-	} 	 
+		lexer_col ++
+	}
 
 	if lexer_par != 0 {
 		error.error_print_lexer(lexer_row, lexer_col, filename, "Expected an \")\" or \"(\"", "SyntaxError")

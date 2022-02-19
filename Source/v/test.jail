@@ -1,1 +1,2 @@
-puts "Siema"
+puts "Hello, World!"
+__rust "  println!(`Hello!`);"

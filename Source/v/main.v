@@ -52,23 +52,31 @@ fn main() {
 			buf = os.read_lines(os.args[1]) ? // Read lines from file
 			content := buf.join("\n") // Join buffer \n
 
+			start_time := time.now()
+
 			/* If flag -time exists */
 			if os.args.contains("-time") == true {
-				println("Start Time: " + time.now().format_ss_milli())
+				println("Start Time:                      | " + start_time.format_ss_milli())
 			}
+
+			/*
+				Compiling
+			*/
 			tokens   := lexer.lexer(content, os.args[1]) // Init lexer
 			main_ast := ast.ast_init(tokens) // Init AST
 			compiler.compiler_init(
 				main_ast,
-				os.args.contains("-o") 
+				os.args.contains("-o")
 			) // Init compiler
+
+			end_time := time.now()
 
 			/* If flag -time exists */
 			if os.args.contains("-time") == true {
-				println("End Time:   " + time.now().format_ss_milli())
+				println("End Time:                        | " + end_time.format_ss_milli())
 			}
 		} else {
 			println("ShellError: Not enough permissions to open this file!") // Some error
 		}
 	}
-} 
+}

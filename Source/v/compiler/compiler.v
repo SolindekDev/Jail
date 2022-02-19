@@ -19,7 +19,7 @@ pub fn str_to_byte(str string) []byte {
 
 	for i in str {
 		bytes << i
-	}	
+	}
 
 	return bytes
 }
@@ -29,7 +29,7 @@ pub fn writef(mut fs os.File, str string) {
 	fs.write(
 		str_to_byte(str)
 	) or {
-		println("cannot write to out.rs. not enough permissions.") 
+		println("cannot write to out.rs. not enough permissions.")
 		exit(1)
 	}
 }
@@ -77,13 +77,13 @@ fn main() {
 
 	/* This function generate code from ast nodes */
 	for i := 0; i < mast.body.len; i++ {
-		actual_node_ast := mast.body[i] // Store in variable acutal node ast 
+		actual_node_ast := mast.body[i] // Store in variable acutal node ast
 		if actual_node_ast.type_ast == ast.TypeExpressionAST.ast_math_operation { // If acutal node is a math operation
 			body_tokens   := actual_node_ast.body_tokens // Store in variable acutal node body tokens
 			mut operation := "" // Store in variable that what will be send into output file write
 
 			for j := 0; j < body_tokens.len; j++ { // Loop through the body tokens
-				if body_tokens[j].type_token == tokens.Types.number { // if body token is and number (int type) 
+				if body_tokens[j].type_token == tokens.Types.number { // if body token is and number (int type)
 					t := body_tokens[j].value // Store in variable actual node body token value
 					operation += "($t) as float" // Add into operation variable an code
 				} else { // if body token is else
@@ -92,8 +92,33 @@ fn main() {
 			}
 
 			name := rand.i64_in_range(0, 2000000) // Generate the name for variable
-			writef(mut out, "	let calculations_$name: float = ($operation) as float;\n	println!(\"{}\", calculations_$name);\n") // Generate code
-		}		
+			writef(mut out, "	let calculations_$name: float = ($operation) as float;\n") // Generate code
+		} else if actual_node_ast.type_ast == ast.TypeExpressionAST.ast_puts_build_in_function { // If actual node is puts build in function
+			if actual_node_ast.arguments[0] == 'int' || actual_node_ast.arguments[0] == 'float' { // If thing to print out is type int or float
+				ac_token := actual_node_ast.body_tokens[0].value // Store in variable value to print out
+				writef(mut out, '	println!("{}", $ac_token);\n') // Generate code
+			} else { // If thing to print out is something else than float or int
+				ac_token := actual_node_ast.body_tokens[0].value // Store in variable value to print out
+				writef(mut out, '	println!("$ac_token");\n') // Generate code
+			}
+		} else if actual_node_ast.type_ast == ast.TypeExpressionAST.ast_math_puts { // If actual node is math operation puts
+			body_tokens   := actual_node_ast.body_tokens // Store in variable acutal node body tokens
+			mut operation := "" // Store in variable that what will be send into output file write
+
+			for j := 0; j < body_tokens.len; j++ { // Loop through the body tokens
+				if body_tokens[j].type_token == tokens.Types.number { // if body token is and number (int type)
+					t := body_tokens[j].value // Store in variable actual node body token value
+					operation += "($t) as float" // Add into operation variable an code
+				} else { // if body token is else
+					operation += body_tokens[j].value // Add into operation variable an code
+				}
+			}
+
+			writef(mut out, "	println!(\"{}\", ($operation) as float);\n") // Generate code
+		} else if actual_node_ast.type_ast == ast.TypeExpressionAST.ast___rust_input_code { // If actual node is __rust input code
+			code := actual_node_ast.body_tokens[0].value.replace("`", '"') // Store in variable code to generate
+			writef(mut out, "	/* Code from __rust keyword */\n$code\n	/* Code end. */\n") // Generate code!
+		}
 	}
 	writef(mut out, "}") // End function main
 

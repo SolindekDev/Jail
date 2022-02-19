@@ -25,10 +25,10 @@ pub enum Types {
     plus
     minus
     divide
-	equals
+		equals
     multiply
-	eof
-	null
+		eof
+		null
 }
 
 // string representation of Types enum
@@ -79,7 +79,7 @@ pub fn create_token(filename string, value string, type_token Types, row int, co
 }
 
 // Function for get the string representation of index type enum.
-pub fn get_string_from_token_type(type_token Types) string { 
+pub fn get_string_from_token_type(type_token Types) string {
     match type_token {
         .number		 { return token_name_number }
         .float       { return token_name_float }
@@ -111,7 +111,7 @@ pub fn get_last_token(tokens[] Token, filename string) Token {
 			filename,
 			"NIL",
 			Types.null,
-			0, 
+			0,
 			0
 		)
 	} else {

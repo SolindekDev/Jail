@@ -1,11 +1,20 @@
+/*
+    Jail Programming Language Copyright (C) 2022 SolindekDev
+
+	Contribuitors:
+		https://github.com/SolindekDev/Jail/edit/main/contributors.md
+*/
+
 module ast
 
+// Enum of keywords
 enum Keywords {
 	puts = 0
-	exit
+	__rust
 }
 
+// String representation of enum
 const (
 	keyword_puts = "puts"
-	keyword_exit = "exit"
+	keyword___rust = "__rust"
 )

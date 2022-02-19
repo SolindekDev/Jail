@@ -19,6 +19,8 @@ pub enum TypeAST {
 pub enum TypeExpressionAST {
 	ast_math_operation = 0
 	ast_puts_build_in_function
+	ast_math_puts
+	ast___rust_input_code
 }
 
 // NodeAST Structure
@@ -31,11 +33,11 @@ struct NodeAST {
 }
 
 // MainAST Structure
-struct MainAST {		
+struct MainAST {
 	pub mut:
 		type_ast  TypeAST
 		body[]    NodeAST
-}	
+}
 
 // Simple function that return a done MainAST
 fn create_main_ast() MainAST {

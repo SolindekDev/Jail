@@ -29,4 +29,8 @@ type float   = f32;
 type double  = f64;
 
 fn main() {
+	println!("Hello, World!");
+	/* Code from __rust keyword */
+  println!("Hello!");
+	/* Code end. */
 }
