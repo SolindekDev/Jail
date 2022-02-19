@@ -39,9 +39,13 @@ How to download interpreter of Jail? There a page about this topic [Here!](https
 - [ ] Includes -->
 - [x] Re-write to V 
 - [x] Lexer 
-- [ ] AST
-- [ ] Eval
-- [ ] Easy math interpreter
+- [x] AST
+- [x] Compiler
+- [x] Easy math interpreter
+- [x] Puts keyword
+- [x] __rust keyword
+- [ ] Variables
+- [ ] Functions
 # Folders
 - **Source** - Source of interpreter
 - **Examples** - Examples of Jail language
