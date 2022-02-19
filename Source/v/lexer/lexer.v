@@ -62,7 +62,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 			}
 		} else if lexer_comments == true || lexer_comments_multi == true { // if comments are on
 			continue
-		} else if ac_ == 34 { // if actual char equals " or ' or ` yeah.. strings...
+		} else if ac_ == 34 { // if actual char equals "
 				mut string_value := ""
 				for x := 0; x < value.len; x++ {
 					i++
@@ -74,7 +74,7 @@ pub fn lexer(value string, filename string) []tokens.Token {
 						string_value += ac
 					}
 				}
-				
+
 				tokens_ << tokens.create_token(
 					filename,
 					string_value,
@@ -82,7 +82,47 @@ pub fn lexer(value string, filename string) []tokens.Token {
 					lexer_row,
 					lexer_col
 				)
-		} else if ac == " " {
+		} else if ac == "'" { // if actual char equals '
+				mut string_value := ""
+				for x := 0; x < value.len; x++ {
+					i++
+					ac = value[i].ascii_str()
+					ac_ = value[i]
+					if ac == "'"{
+						break
+					} else {
+						string_value += ac
+					}
+				}
+
+				tokens_ << tokens.create_token(
+					filename,
+					string_value,
+					tokens.Types.string_,
+					lexer_row,
+					lexer_col
+				)
+		} else if ac == "`" { // if actual char equals '
+				mut string_value := ""
+				for x := 0; x < value.len; x++ {
+					i++
+					ac = value[i].ascii_str()
+					ac_ = value[i]
+					if ac == "`"{
+						break
+					} else {
+						string_value += ac
+					}
+				}
+
+				tokens_ << tokens.create_token(
+					filename,
+					string_value,
+					tokens.Types.string_,
+					lexer_row,
+					lexer_col
+				)
+		}else if ac == " " {
 			lexer_space = true
 		} else if tokens.get_one_char(ac) != tokens.Types.null { // if char is +=-*/()
 			if tokens.get_one_char(ac) == tokens.Types.lpar ||

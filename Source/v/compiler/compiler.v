@@ -116,7 +116,7 @@ fn main() {
 
 			writef(mut out, "	println!(\"{}\", ($operation) as float);\n") // Generate code
 		} else if actual_node_ast.type_ast == ast.TypeExpressionAST.ast___rust_input_code { // If actual node is __rust input code
-			code := actual_node_ast.body_tokens[0].value.replace("`", '"') // Store in variable code to generate
+			code := actual_node_ast.body_tokens[0] // Store in variable code to generate
 			writef(mut out, "	/* Code from __rust keyword */\n$code\n	/* Code end. */\n") // Generate code!
 		}
 	}
