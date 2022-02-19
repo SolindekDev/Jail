@@ -7,7 +7,7 @@ If you programming in rust you know that with \` you can't create a string, but 
 This what code will be generated:
 ```rust
 /* Code from __rust keyword */
-println!("Hello!");
+println!("Hello, World!");
 /* Code end. */
 ```
 So that all about `__rust` keyword in **Jail**!
