@@ -1,3 +1,4 @@
+![Logo](./logo.png)
 # Jail Programming Language
 # About
 **Jail** is a compiled language to assembler, written in rust
