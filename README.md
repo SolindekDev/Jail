@@ -1,4 +1,6 @@
-![Logo](./logo.png)
+<div align="center">
+  <img src="./logo.png" alt="Logo" width="250" />
+</div>
 # Jail Programming Language
 # About
 **Jail** is a compiled language to assembler, written in rust
