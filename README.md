@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="./logo.png" alt="Logo" width="250" />
+  <img src="./logo.png" alt="Logo" width="400" />
 </div>
 
 # Jail Programming Language
