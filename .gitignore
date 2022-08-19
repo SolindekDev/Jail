@@ -1,2 +1,9 @@
+# Rust
 .cargo
-/.*
+# Editors
+.cproject
+.idea
+.vscode
+.project
+# Github
+.github
