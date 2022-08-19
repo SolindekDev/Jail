@@ -9,3 +9,8 @@ Cargo.lock
 .project/
 # Github
 .github/
+
+
+# Added by cargo
+
+/target
