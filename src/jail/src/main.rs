@@ -1,6 +1,6 @@
-use jail_error;
+use jail_token::*;
 
 fn main() {
-    println!("Hello, world!");
-    jail_error::add(2, 20);
+    let number_token = Token::new(TokenKind::IntLiteral, "20".to_string(), "main.ja".to_string(), 0, 0, NumberBase::None);
+    println!("{}, {}", number_token.value, number_token.kind.get_pretty_name());
 }

@@ -6,9 +6,34 @@ version = 3
 name = "jail"
 version = "0.1.0"
 dependencies = [
+ "jail_ast",
+ "jail_codegen",
  "jail_error",
+ "jail_lex",
+ "jail_parse",
+ "jail_token",
 ]
 
 [[package]]
+name = "jail_ast"
+version = "0.1.0"
+
+[[package]]
+name = "jail_codegen"
+version = "0.1.0"
+
+[[package]]
 name = "jail_error"
+version = "0.1.0"
+
+[[package]]
+name = "jail_lex"
+version = "0.1.0"
+
+[[package]]
+name = "jail_parse"
+version = "0.1.0"
+
+[[package]]
+name = "jail_token"
 version = "0.1.0"

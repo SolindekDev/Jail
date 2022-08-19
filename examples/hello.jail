@@ -1,4 +1,5 @@
-space main[argv] [int]
-    puts "Hello, World"
-    ret 0
-end
+import "io"
+
+fn main() {
+    println("Hello")
+}
