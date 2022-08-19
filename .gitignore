@@ -1,9 +1,11 @@
 # Rust
 .cargo
+.rustc_info.json
+Cargo.lock
 # Editors
-.cproject
-.idea
-.vscode
-.project
+.cproject/
+.idea/
+.vscode/
+.project/
 # Github
-.github
+.github/
