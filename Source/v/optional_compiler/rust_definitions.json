@@ -1,6 +1,0 @@
-{
-    "puts_string": "println!('&')",
-    "puts_math": "println!(&)",
-    "rust": "&",
-    "math": "&"
-}

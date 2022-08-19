@@ -1,5 +1,0 @@
-var name = "Andrew" # Create variable "name" with value "Andrew"
-var age = 18 # Create variable "age" with value 18
-
-puts name # Print out name
-puts age # Print out age
