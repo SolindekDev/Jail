@@ -1,0 +1,15 @@
+﻿[package]
+name = "jail"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+jail_lex = { path = "../jail_lex" }
+jail_token = { path = "../jail_token" }
+jail_parse = { path = "../jail_parse" }
+jail_ast = { path = "../jail_ast" }
+jail_codegen = { path = "../jail_codegen" }
+jail_error = { path = "../jail_error" }
+
