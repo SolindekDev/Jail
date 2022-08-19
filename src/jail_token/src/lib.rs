@@ -56,6 +56,7 @@ pub struct Token {
 
 impl TokenKind {
     pub fn get_pretty_name(&self) -> String {
+        // TODO: Add more prettier names to match 
         match self {
             TokenKind::Identifier => "Identifier".to_string(),
             TokenKind::StringLiteral => "StringLiteral".to_string(),
