@@ -1,14 +1,21 @@
-pub fn add(left: usize, right: usize) -> usize {
-    left + right
+use std::fmt;
+
+#[derive(Debug, Clone)]
+pub struct LexerError{
+    pub kind: String
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn it_works() {
-        let result = add(2, 2);
-        assert_eq!(result, 4);
+impl fmt::Display for LexerError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.kind)
     }
 }
+
+
+
+impl LexerError{
+    pub fn new(kind: &str) -> Self{
+        Self{kind: kind.to_string()}
+    }
+}
+

@@ -29,6 +29,10 @@ version = "0.1.0"
 [[package]]
 name = "jail_lex"
 version = "0.1.0"
+dependencies = [
+ "jail_error",
+ "jail_token",
+]
 
 [[package]]
 name = "jail_parse"

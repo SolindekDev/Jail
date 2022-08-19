@@ -30,6 +30,7 @@ pub enum TokenKind {
     Bang,
     QuestionMark,
     Colon,
+    NewLine,
     None
 }
 
