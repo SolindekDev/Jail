@@ -1,21 +1,25 @@
-use std::fmt;
+use colored::Colorize;
 
-#[derive(Debug, Clone)]
-pub struct LexerError{
-    pub kind: String
+pub enum ErrorKind {
+    SyntaxError,
+    FileError,
+    ParserError,
+    CodegenError,
+    CompilerError,
 }
 
-impl fmt::Display for LexerError {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "{}", self.kind)
+impl ErrorKind {
+    pub fn to_string(&self) -> String {
+        match self {
+            ErrorKind::SyntaxError => "SyntaxError".to_string(),
+            ErrorKind::FileError => "FileError".to_string(),
+            ErrorKind::ParserError => "ParserError".to_string(),
+            ErrorKind::CodegenError => "CodegenError".to_string(),
+            ErrorKind::CompilerError => "CompilerError".to_string(),
+        }
     }
 }
 
-
-
-impl LexerError{
-    pub fn new(kind: &str) -> Self{
-        Self{kind: kind.to_string()}
-    }
+pub fn print_error(error_kind: ErrorKind, message: String) {
+    println!("{}: {}", error_kind.to_string(), message)
 }
-
