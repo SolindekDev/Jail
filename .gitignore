@@ -1,6 +1,7 @@
 # Rust
 .cargo
 .rustc_info.json
+/debug
 Cargo.lock
 # Editors
 .cproject/

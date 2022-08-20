@@ -8,9 +8,27 @@ pub struct ArgsParser {
     pub flags: Vec<String>,
 }
 
-impl ArgsParser {
-    pub fn clear_out_flag(&self, argument: String) -> String {
+// This function delete -- or - from start
+// of flag e.g before clear_out_flag "--help" 
+// after "-help"
+pub fn clear_out_flag(mut argument: String) -> String {
+    if argument.starts_with("--") {
+        argument.remove(0);
+        argument.remove(0);
+        return argument;
+    } else {
+        argument.remove(0);
+        return argument.to_string();
+    }
+}
 
+impl ArgsParser {
+    // Find flag
+    pub fn is_there_flag(&self, flag: &str) -> bool {
+        return self.flags
+                   .iter()
+                   .position(|each| *each == flag.to_string())
+                   .is_some();
     }
 
     pub fn new(mut argv: Args) -> Self {
@@ -31,10 +49,17 @@ impl ArgsParser {
         // Loop by every element of array "better_args"
         for mut arg in better_args {
             if arg.starts_with("--") || arg.starts_with("-") {
-                let flag = clear_out_flag(arg);
+                let flag = clear_out_flag(arg.clone());
+                match flag.as_str() {
+                    "h" | "he" | "hel" | "help"                                  => flags.push("help".to_string()),
+                    "v" | "ve" | "ver" | "vers" | "versi" | "versio" | "version" => flags.push("version".to_string()),
+                    _ => { 
+                        print_error(ErrorKind::ArgsError, format!("unknown flag \"{}\" in arguments", arg), true);
+                    }
+                }
             } else {
                 if is_filename == true {
-                    print_error(ErrorKind::ArgsError, format!("unknown use of {} in arguments", arg))
+                    print_error(ErrorKind::ArgsError, format!("unknown use of \"{}\" in arguments", arg), true);
                 } else {
                     is_filename = true;
                     filename = arg;
@@ -42,10 +67,8 @@ impl ArgsParser {
             }
         }
 
-        println!("{}", filename);
-
         // Return
-        ArgsParser{
+        Self {
             is_filename: is_filename,
             filename: filename.to_string(),
             flags: flags,

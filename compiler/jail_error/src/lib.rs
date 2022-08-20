@@ -23,11 +23,11 @@ impl ErrorKind {
     }
 }
 
-pub fn print_error(error_kind: ErrorKind, message: String, exit: bool) {
+pub fn print_error(error_kind: ErrorKind, message: String, exit_: bool) {
     println!("{}: {}", 
         Red.paint(error_kind.to_string()).to_string(), 
         message);
-    if (exit == true) {
-        process::exit(0x00);
+    if exit_ == true {
+        exit(0x00);
     }
 }
