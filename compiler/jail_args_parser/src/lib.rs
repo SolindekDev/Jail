@@ -1,6 +1,5 @@
 use jail_error::*;
-use std::env::{args, Args};
-use std::vec;
+use std::env::{Args};
 
 pub struct ArgsParser {
     pub is_filename: bool,
@@ -31,7 +30,7 @@ impl ArgsParser {
                    .is_some();
     }
 
-    pub fn new(mut argv: Args) -> Self {
+    pub fn new(argv: Args) -> Self {
         // Some important variables in args parser
         let mut flags: Vec<String> = Vec::new();             // Array of flags e.g this can look like this ["--help"]
         let mut better_args: Vec<String> = argv.collect();   // We don't want Args type we want a String vector
@@ -47,7 +46,7 @@ impl ArgsParser {
         better_args.remove(0);
 
         // Loop by every element of array "better_args"
-        for mut arg in better_args {
+        for arg in better_args {
             if arg.starts_with("--") || arg.starts_with("-") {
                 let flag = clear_out_flag(arg.clone());
                 match flag.as_str() {

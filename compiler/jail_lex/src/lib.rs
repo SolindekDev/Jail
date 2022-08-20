@@ -1,53 +1,71 @@
-// use jail_token::Token;
-// use jail_token::TokenKind;
+use jail_token::*;
 
-// // Data 
+pub struct LexerPosition{
+    pub filename: String,
+    pub row: i32,
+    pub col: i32,
+}
 
-// pub struct Data<T>{
-//     content: T
-// }
+impl LexerPosition{
+    pub fn get_pretty(&self) -> String {
+        return format!("{}:{}:{}", self.filename, self.row, self.row);
+    }
 
-// impl <T>Data<T>{
-//     pub fn new(content: T) -> Self{
-//         Self{content}
-//     }
-// }
+    pub fn new(row: i32, col: i32, filename: String) -> Self{
+        Self{
+            filename,
+            row, 
+            col
+        }
+    }
+}
 
+pub struct Lexer{
+    data: String,
+    position: LexerPosition,
+    tokens: Vec<Token>,
+    index: usize,
+    current_char: char,
+    next_char: Option<char>,
+    is_error: bool,
+}
 
-// // Lexer
+impl Lexer{
+    pub fn new(data: String, filename: String) -> Self{
+        Self {
+            data: data, 
+            position: LexerPosition::new(-1, -1, filename),
+            tokens: vec![],
+            index: 0,
+            current_char: '\0',
+            next_char: None,
+            is_error: false
+        }
+    }
+    
+    pub fn start(&self) {
+        println!("{}", self.data);
+    }
 
-// struct LexerPosition{
-//     row: i32,
-//     col: i32,
-// }
+    pub fn get_next_char() -> Option<char> {
+        if self.data.len == self.index {
+            return None;
+        } else {
+            return Some(self.data[self.index]);
+        }
+    }
 
-// impl LexerPosition{
-//     fn new(row: i32, col: i32) -> Self{
-//         Self{row, col}
-//     }
-// }
+    pub fn advance(&self, add_index: usize) {
+        self.index += add_index;
+        self.current_char = self.data[self.index];
+        self.next_char = self.get_next_char();
 
-// pub struct Lexer{
-//     data: Data<String>,
-//     position: LexerPosition,
-// }
-
-// impl Lexer{
-//     pub fn new(data: Data<String>) -> Self{
-//         Self{
-//             data: data, 
-//             position: LexerPosition::new(-1,-1),
-//         }
-//     }
-//     pub fn next_token(&mut self) -> Result<Token, LexerError>{
-//         self.position.col += 1;
-//         match self.data.content.as_bytes()[self.position as usize] as char{
-//             '\n' => {
-//                 self.position.row += 1;
-//                 Token::new(TokenKind::NewLine, "\n".to_string(), "main.rs", self.position.row, self.position.col, NumberBase::None)
-//             }
-//             _ => {Err(LexerError::new("Not implemented yet..."))}
-//         }        
-//     }
-// }
+        if self.current_char == '\n' {
+            self.position.row += 1;
+            self.position.col = 0;
+        } else {
+            self.position.col += 1;
+        }
+    }
+}
 
