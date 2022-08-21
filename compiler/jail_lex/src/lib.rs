@@ -1,4 +1,5 @@
 use jail_token::*;
+use jail_error::*;
 
 pub struct LexerPosition {
     pub filename: String,
@@ -133,10 +134,265 @@ impl Lexer {
                     },
                     None => {}
                 }
-            }
+            } else if self.is_whitespace(self.current_char) {
+                self.whitespace();
+            } else {
+                let kind = self.get_kind();
+                match kind {
+                    TokenKind::None => {
+                        print_error(
+                            ErrorKind::UnsupportedCharError, 
+                            format!("{} ({}) unsupported char", 
+                                self.current_char, 
+                                self.current_char as u8),
+                            true);
+                    },
+                    _ => {
+                        self.tokens.push(Token::new(
+                            kind,
+                            "symbol".to_string(),
+                            self.position.filename.clone(),
+                            self.position.row,
+                            self.position.col,
+                            NumberBase::None
+                        ));
+                    }
+                }
+            }     
         }
 
         self.print_tokens();
+    }
+
+    pub fn get_kind(&self) -> TokenKind {
+        match self.current_char { 
+            '(' => TokenKind::LeftParen,
+            ')' => TokenKind::RightParen,
+            '{' => TokenKind::LeftCurlyBrackets,
+            '}' => TokenKind::RightCurlyBrackets,
+            '+' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::AddAssignment;
+                        } else if c == '+' {
+                            return TokenKind::Increment;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::Plus;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::Plus;
+                    }
+                }
+            },
+            '-' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::SubstractAssignment;
+                        } else if c == '-' {
+                            return TokenKind::Decrement;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::Minus;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::Minus;
+                    }
+                }
+            },
+            '*' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::MultiplyAssignment;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::Multiply;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::Multiply;
+                    }
+                }
+            },
+            '/' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::DivideAssignment;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::Divide;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::Divide;
+                    }
+                }
+            },
+            '%' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::ModulusAssignment;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::Modulus;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::Modulus;
+                    }
+                }
+            },
+            '=' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::Equals;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::Assignment;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::Assignment;
+                    }
+                }
+            },
+            '>' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::BiggerThanOrEquals;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::BiggerThan;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::BiggerThan;
+                    }
+                }
+            },
+            '<' => {
+                match self.next_char {
+                    Some(c) => {
+                        if c == '=' {
+                            return TokenKind::LessThanOrEquals;
+                        } else if self.is_whitespace(c) {
+                            return TokenKind::LessThan;
+                        } else {
+                            print_error(
+                                ErrorKind::SyntaxError, 
+                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                    c), 
+                                true
+                            );
+                            return TokenKind::None;
+                        }
+                    }
+                    None => {
+                        return TokenKind::LessThan;
+                    }
+                }
+            },
+            '|' => TokenKind::Or,
+            '&' => TokenKind::And,
+            '!' => TokenKind::Bang,
+            '?' => TokenKind::QuestionMark,
+            ':' => TokenKind::Colon,
+            _ => TokenKind::None,
+        }
+    }
+
+    pub fn whitespace(&mut self) {
+        self.is_space = true;
+        self.is_hexadecimal_opened = true;
+        self.is_octal_opened = true;
+        self.is_binary_opened = true;
+    }
+
+    //
+    // This function is taken from rust compiler, thanks rust :D
+    //
+    // https://github.com/rust-lang/rust/blob/master/compiler/rustc_lexer/src/lib.rs#L258-L285
+    //
+    pub fn is_whitespace(&self, c: char) -> bool {
+        return matches!(
+            c,
+            
+            '\u{0009}'   // \t
+            | '\u{000A}' // \n
+            | '\u{000B}' // vertical tab
+            | '\u{000C}' // form feed
+            | '\u{000D}' // \r
+            | '\u{0020}' // space
+    
+            // NEXT LINE from latin1
+            | '\u{0085}'
+    
+            // Bidi markers
+            | '\u{200E}' // LEFT-TO-RIGHT MARK
+            | '\u{200F}' // RIGHT-TO-LEFT MARK
+    
+            // Dedicated whitespace characters from Unicode
+            | '\u{2028}' // LINE SEPARATOR
+            | '\u{2029}' // PARAGRAPH SEPARATOR
+        );
     }
 
     pub fn string_creator(&mut self) {

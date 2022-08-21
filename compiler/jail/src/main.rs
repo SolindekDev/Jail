@@ -30,13 +30,13 @@ fn main() {
     }
 
     if args_parser.is_filename == true {
-        let mut path = Path::new(&args_parser.filename);
+        let path = Path::new(&args_parser.filename);
         if path.exists() {
             if path.is_dir() == false {
                 let value = fs::read_to_string(&args_parser.filename)
                     .expect("file not found!");
 
-                let lexer = Lexer::new(value, args_parser.filename)
+                let mut lexer = Lexer::new(value, args_parser.filename)
                     .start();
             } else {
                 print_error(ErrorKind::FileError, format!("\"{}\" is a directory", &args_parser.filename), true);
