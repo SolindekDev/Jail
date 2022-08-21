@@ -10,11 +10,12 @@ If you more interested in Jail or you want to learn Jail go and check our [Docum
 # Download
 How to download jail compiler? There a page about this topic [Here!](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Download.md)
 # Folders
-- **src** - Source of compiler
+- **compiler** - Source of compiler
   - **jail** - Source code of main package in Jail
   - **jail-lex** - Lexer is a lib that will take the file value and change it to token array
   - **jail-token** - Have some important things that helps with tokens
   - **jail-parser** - Parser is a program that is supposed to understand your code and return an AST (Abstract Syntax Tree)
+  - **jail-args_parser** - Parsing arguments
   - **jail-ast** - Have utils for AST
   - **jail-codegen** - Takes AST and return with code in assembly
   - **jail-error** - Lib for printing error messages
