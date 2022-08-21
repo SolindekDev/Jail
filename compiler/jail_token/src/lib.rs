@@ -30,6 +30,7 @@ pub enum TokenKind {
     Bang,
     QuestionMark,
     Colon,
+    Newline,
     None
 }
 
@@ -100,6 +101,7 @@ impl TokenKind {
             TokenKind::Bang => "Bang".to_string(),
             TokenKind::QuestionMark => "QuestionMark".to_string(),
             TokenKind::Colon => "Colon".to_string(),
+            TokenKind::Newline => "Newline".to_string(),
             TokenKind::None => "None".to_string(),
         }
     }
