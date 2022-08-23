@@ -1,6 +1,12 @@
 use jail_token::*;
 use jail_error::*;
 
+const IDENTIFIER_CONSTANTS: &str = "abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVXYZ_@$";
+const DECIMAL_DIGITS_CONSTANTS: &str = "1234567890";
+const HEXADECIMAL_DIGITS_CONSTANTS: &str = "1234567890abcdefABCDEF";
+const OCTALS_DIGITS_CONSTANTS: &str = "1234567890abcdefABCDEF";
+const BINARY_DIGITS_CONSTANTS: &str = "01";
+
 pub struct LexerPosition {
     pub filename: String,
     pub row: i32,
@@ -33,6 +39,7 @@ pub struct Lexer {
     is_space: bool,
     is_comment_opened_inline: bool,
     is_comment_opened_multiline: bool,
+    was_comment_open_in_last_tok: bool,
     is_hexadecimal_opened: bool,
     is_octal_opened: bool,
     is_binary_opened: bool,
@@ -43,7 +50,7 @@ impl Lexer {
     pub fn new(data: String, filename: String) -> Self{
         Self {
             data: data, 
-            position: LexerPosition::new(1, 0, filename),
+            position: LexerPosition::new(1, 0, filename.clone()),
             tokens: vec![],
             last_token: Token::new(TokenKind::None, "".to_string(), filename, 0, 0, NumberBase::None),
             index: 0,
@@ -53,6 +60,7 @@ impl Lexer {
             is_space: false,
             is_comment_opened_inline: false,
             is_comment_opened_multiline: false,
+            was_comment_open_in_last_tok: false,
             is_hexadecimal_opened: false,
             is_octal_opened: false,
             is_binary_opened: false,
@@ -83,6 +91,7 @@ impl Lexer {
             }
         } else {
             self.is_comment_opened_multiline = false;
+            self.was_comment_open_in_last_tok = true;
             self.advance(1);
         }
     }
@@ -96,7 +105,7 @@ impl Lexer {
                 None => {}
             }
         } else {
-            self.is_comment_opened_inline = false;
+            self.is_comment_opened_inline = true;
         }
     }
 
@@ -106,28 +115,35 @@ impl Lexer {
             self.advance(0);
 
             if self.current_char == '\0' {
+                println!("\\0 here");
                 break;
             } else if self.current_char == '\n' {
+                println!("newline");
                 self.newline();
             } else if self.current_char == '/' 
                 && self.next_char == Some('*') 
                 && self.is_comment_opened_inline == false 
                 && self.is_comment_opened_multiline == false {
+                println!("multi line comment");
                 self.comment_multiline_open();
             } else if self.current_char == '*' 
                 && self.next_char == Some('/') 
                 && self.is_comment_opened_inline == false 
                 && self.is_comment_opened_multiline == true {
+                println!("multi line comment close");
                 self.comment_multiline_close();
+                continue;
             } else if self.is_comment_opened_multiline == true {
                 continue;
             } else if self.current_char == '/'
                 && self.next_char == Some('/')
                 && self.is_comment_opened_inline == false {
+                println!("comment open");
                 self.comment_inline_open();
             } else if self.is_comment_opened_inline == true {
                 continue;
             } else if self.current_char == '"' {
+                println!("string creator");
                 self.string_creator();
             } else if self.is_string_opened == true {
                 match self.tokens.last_mut() {
@@ -139,17 +155,20 @@ impl Lexer {
             } else if self.is_whitespace(self.current_char) {
                 self.whitespace();
             } else if self.is_identifier_char(self.current_char) {
+                println!("identifier");
                 self.identifier();
             } else {
                 let kind = self.get_kind();
                 match kind {
                     TokenKind::None => {
-                        print_error(
-                            ErrorKind::UnsupportedCharError, 
-                            format!("{} ({}) unsupported char", 
-                                self.current_char, 
-                                self.current_char as u8),
-                            true);
+                        if self.was_comment_open_in_last_tok == false {
+                            print_error(
+                                ErrorKind::UnsupportedCharError, 
+                                format!("{} ({}) unsupported char", 
+                                    self.current_char, 
+                                    self.current_char as u8),
+                                true);
+                        }
                     },
                     _ => {
                         self.tokens.push(Token::new(
@@ -163,6 +182,10 @@ impl Lexer {
                     }
                 }
             }     
+
+            if self.was_comment_open_in_last_tok == true {
+                self.was_comment_open_in_last_tok = false;
+            }
         }
 
         self.print_tokens();
@@ -174,7 +197,7 @@ impl Lexer {
         } else {
             match self.tokens.get(self.tokens.len() - 1) {
                 Some(token) => {
-                    return token.copy();
+                    return token.clone();
                 }
                 None => {
                     return Token::new(TokenKind::None, "".to_string(), self.position.filename.clone(), 0, 0, NumberBase::None);
@@ -185,6 +208,7 @@ impl Lexer {
     }
 
     pub fn identifier(&mut self) {
+        println!("{}", self.last_token.kind == TokenKind::None);
         if self.last_token.kind == TokenKind::None {
             self.tokens.push(Token::new(
                 TokenKind::Identifier,
@@ -229,45 +253,45 @@ impl Lexer {
 
     // is char a identifier character
     pub fn is_identifier_char(&self, c: char) -> bool {
-        return match c.to_lowercase() {
-            'a'..'z' | '_' | '@' | '$' => true,
-            _ => false,
-        }
+        return IDENTIFIER_CONSTANTS
+            .to_string()
+            .find(c)
+            .is_some();
     }
 
     // is char a decimal digit
     pub fn is_digit(&self, c: char) -> bool {
-        return match c {
-            '0'..'9' => true,
-            _ => false,
-        }
+        return DECIMAL_DIGITS_CONSTANTS
+            .to_string()
+            .find(c)
+            .is_some();
     }
 
     // is char a hexadecimal digit
     pub fn is_x_digit(&self, c: char) -> bool {
-        return match c.to_lowercase() {
-            '0'..'9' | 'a'..'f' => true,
-            _ => false,
-        }
+        return HEXADECIMAL_DIGITS_CONSTANTS
+            .to_string()
+            .find(c)
+            .is_some();
     }
 
     // is char a octal digit
     pub fn is_octal_digit(&self, c: char) -> bool {
-        return match c {
-            '0'..'7' => true,
-            _ => false,
-        }
+        return OCTALS_DIGITS_CONSTANTS
+            .to_string()
+            .find(c)
+            .is_some();
     }
 
     // is char a binary digit
     pub fn is_binary_digit(&self, c: char) -> bool {
-        return match c {
-            '0'..'1' => true,
-            _ => false,
-        }
+        return BINARY_DIGITS_CONSTANTS
+            .to_string()
+            .find(c)
+            .is_some();
     }
 
-    pub fn get_kind(&self) -> TokenKind {
+    pub fn get_kind(&mut self) -> TokenKind {
         match self.current_char { 
             '(' => TokenKind::LeftParen,
             ')' => TokenKind::RightParen,
@@ -275,11 +299,12 @@ impl Lexer {
             '}' => TokenKind::RightCurlyBrackets,
             '+' => {
                 match self.next_char {
-                    Some(cc) => {
+                    Some(c) => {
                         let c = self.next_char
                             .unwrap();
 
                         if c == '=' {
+                            self.advance(1);
                             return TokenKind::AddAssignment;
                         } else if c == '+' {
                             return TokenKind::Increment;
@@ -304,6 +329,7 @@ impl Lexer {
                 match self.next_char {
                     Some(c) => {
                         if c == '=' {
+                            self.advance(1);
                             return TokenKind::SubstractAssignment;
                         } else if c == '-' {
                             return TokenKind::Decrement;
@@ -328,6 +354,7 @@ impl Lexer {
                 match self.next_char {
                     Some(c) => {
                         if c == '=' {
+                            self.advance(1);
                             return TokenKind::MultiplyAssignment;
                         } else if self.is_whitespace(c) {
                             return TokenKind::Multiply;
@@ -350,9 +377,12 @@ impl Lexer {
                 match self.next_char {
                     Some(c) => {
                         if c == '=' {
+                            self.advance(1);
                             return TokenKind::DivideAssignment;
-                        } else if self.is_whitespace(c) {
+                        } else if self.is_whitespace(c) && self.was_comment_open_in_last_tok == false {
                             return TokenKind::Divide;
+                        } else if self.is_whitespace(c) && self.was_comment_open_in_last_tok == true {
+                            return TokenKind::None;
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
@@ -364,7 +394,11 @@ impl Lexer {
                         }
                     }
                     None => {
-                        return TokenKind::Divide;
+                        if self.was_comment_open_in_last_tok == false {
+                            return TokenKind::Divide;
+                        } else {
+                            return TokenKind::None;
+                        }
                     }
                 }
             },
@@ -372,6 +406,7 @@ impl Lexer {
                 match self.next_char {
                     Some(c) => {
                         if c == '=' {
+                            self.advance(1);
                             return TokenKind::ModulusAssignment;
                         } else if self.is_whitespace(c) {
                             return TokenKind::Modulus;
@@ -396,6 +431,7 @@ impl Lexer {
                         if c == '=' {
                             return TokenKind::Equals;
                         } else if self.is_whitespace(c) {
+                            self.advance(1);
                             return TokenKind::Assignment;
                         } else {
                             print_error(
@@ -543,7 +579,7 @@ impl Lexer {
     }
 
     pub fn get_next_char(&mut self) -> Option<char> {
-        if self.data.len() == self.index {
+        if self.data.len() == self.index+1 {
             return None;
         } else {
             return Some(self.data.as_bytes()[self.index+1] as char);

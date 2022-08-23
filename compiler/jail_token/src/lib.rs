@@ -1,3 +1,4 @@
+#[derive(Clone, PartialEq)]
 pub enum TokenKind {
     Identifier,
     StringLiteral,
@@ -35,6 +36,13 @@ pub enum TokenKind {
     None
 }
 
+// impl PartialEq for TokenKind {
+//     fn eq(&self, other: &Self) -> bool {
+//         self == other
+//     }
+// }
+
+#[derive(Clone, PartialEq)]
 pub enum NumberBase {
     None,
     Binary,
@@ -43,12 +51,25 @@ pub enum NumberBase {
     Hexadecimal,
 }
 
+// impl PartialEq for NumberBase {
+//     fn eq(&self, other: &Self) -> bool {
+//         self == other
+//     }
+// }
+
+#[derive(Clone, PartialEq)]
 pub struct TokenPos {
     pub row: i32,
     pub col: i32,
 }
 
-#[derive(PartialEq)]
+// impl PartialEq for TokenPos {
+//     fn eq(&self, other: &Self) -> bool {
+//         self.row == other.row && self.col == other.col
+//     }
+// }
+
+#[derive(Clone, PartialEq)]
 pub struct Token {
     pub kind: TokenKind,
     pub pos: TokenPos,

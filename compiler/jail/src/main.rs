@@ -36,7 +36,7 @@ fn main() {
                 let value = fs::read_to_string(&args_parser.filename)
                     .expect("file not found!");
 
-                let mut lexer = Lexer::new(value, args_parser.filename)
+                let lexer = Lexer::new(value, args_parser.filename)
                     .start();
             } else {
                 print_error(ErrorKind::FileError, format!("\"{}\" is a directory", &args_parser.filename), true);
