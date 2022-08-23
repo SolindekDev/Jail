@@ -25,6 +25,7 @@ pub struct Lexer {
     data: String,
     position: LexerPosition,
     tokens: Vec<Token>,
+    last_token: Token,
     index: usize,
     current_char: char,
     next_char: Option<char>,
@@ -44,6 +45,7 @@ impl Lexer {
             data: data, 
             position: LexerPosition::new(1, 0, filename),
             tokens: vec![],
+            last_token: Token::new(TokenKind::None, "".to_string(), filename, 0, 0, NumberBase::None),
             index: 0,
             current_char: '\0',
             next_char: None,
@@ -136,6 +138,8 @@ impl Lexer {
                 }
             } else if self.is_whitespace(self.current_char) {
                 self.whitespace();
+            } else if self.is_identifier_char(self.current_char) {
+                self.identifier();
             } else {
                 let kind = self.get_kind();
                 match kind {
@@ -164,6 +168,105 @@ impl Lexer {
         self.print_tokens();
     }
 
+    pub fn get_last_token(&self) -> Token {
+        if self.tokens.len() == 0 {
+            return Token::new(TokenKind::None, "".to_string(), self.position.filename.clone(), 0, 0, NumberBase::None);
+        } else {
+            match self.tokens.get(self.tokens.len() - 1) {
+                Some(token) => {
+                    return token.copy();
+                }
+                None => {
+                    return Token::new(TokenKind::None, "".to_string(), self.position.filename.clone(), 0, 0, NumberBase::None);
+                }
+            }
+        }
+
+    }
+
+    pub fn identifier(&mut self) {
+        if self.last_token.kind == TokenKind::None {
+            self.tokens.push(Token::new(
+                TokenKind::Identifier,
+                self.current_char.to_string(),
+                self.position.filename.clone(),
+                self.position.row,
+                self.position.col,
+                NumberBase::None
+            ));
+        } else {
+            if self.is_space == false {
+                if self.last_token.kind == TokenKind::Identifier {
+                    match self.tokens.last_mut() {
+                        Some(t) => {
+                            t.value.push(self.current_char);
+                        },
+                        None => {}
+                    }
+                } else {
+                    self.tokens.push(Token::new(
+                        TokenKind::Identifier,
+                        self.current_char.to_string(),
+                        self.position.filename.clone(),
+                        self.position.row,
+                        self.position.col,
+                        NumberBase::None
+                    ));
+                }
+            } else {
+                self.tokens.push(Token::new(
+                    TokenKind::Identifier,
+                    self.current_char.to_string(),
+                    self.position.filename.clone(),
+                    self.position.row,
+                    self.position.col,
+                    NumberBase::None
+                ));
+            }
+        }
+        self.is_space = false;
+    }
+
+    // is char a identifier character
+    pub fn is_identifier_char(&self, c: char) -> bool {
+        return match c.to_lowercase() {
+            'a'..'z' | '_' | '@' | '$' => true,
+            _ => false,
+        }
+    }
+
+    // is char a decimal digit
+    pub fn is_digit(&self, c: char) -> bool {
+        return match c {
+            '0'..'9' => true,
+            _ => false,
+        }
+    }
+
+    // is char a hexadecimal digit
+    pub fn is_x_digit(&self, c: char) -> bool {
+        return match c.to_lowercase() {
+            '0'..'9' | 'a'..'f' => true,
+            _ => false,
+        }
+    }
+
+    // is char a octal digit
+    pub fn is_octal_digit(&self, c: char) -> bool {
+        return match c {
+            '0'..'7' => true,
+            _ => false,
+        }
+    }
+
+    // is char a binary digit
+    pub fn is_binary_digit(&self, c: char) -> bool {
+        return match c {
+            '0'..'1' => true,
+            _ => false,
+        }
+    }
+
     pub fn get_kind(&self) -> TokenKind {
         match self.current_char { 
             '(' => TokenKind::LeftParen,
@@ -172,7 +275,10 @@ impl Lexer {
             '}' => TokenKind::RightCurlyBrackets,
             '+' => {
                 match self.next_char {
-                    Some(c) => {
+                    Some(cc) => {
+                        let c = self.next_char
+                            .unwrap();
+
                         if c == '=' {
                             return TokenKind::AddAssignment;
                         } else if c == '+' {
@@ -182,7 +288,7 @@ impl Lexer {
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                format!("invalid syntax, unexpected use of {} after '+'", 
                                     c), 
                                 true
                             );
@@ -206,7 +312,7 @@ impl Lexer {
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                format!("invalid syntax, unexpected use of {} after '-'", 
                                     c), 
                                 true
                             );
@@ -228,7 +334,7 @@ impl Lexer {
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                format!("invalid syntax, unexpected use of {} after '*'", 
                                     c), 
                                 true
                             );
@@ -250,7 +356,7 @@ impl Lexer {
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                format!("invalid syntax, unexpected use of {} after '/'", 
                                     c), 
                                 true
                             );
@@ -294,7 +400,7 @@ impl Lexer {
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                format!("invalid syntax, unexpected use of {} after '='", 
                                     c), 
                                 true
                             );
@@ -316,7 +422,7 @@ impl Lexer {
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                format!("invalid syntax, unexpected use of {} after '>'", 
                                     c), 
                                 true
                             );
@@ -338,7 +444,7 @@ impl Lexer {
                         } else {
                             print_error(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
+                                format!("invalid syntax, unexpected use of {} after '<'", 
                                     c), 
                                 true
                             );
@@ -360,7 +466,7 @@ impl Lexer {
     }
 
     pub fn whitespace(&mut self) {
-        self.is_space = true;
+        self.is_space = true; 
         self.is_hexadecimal_opened = true;
         self.is_octal_opened = true;
         self.is_binary_opened = true;
@@ -440,7 +546,7 @@ impl Lexer {
         if self.data.len() == self.index {
             return None;
         } else {
-            return Some(self.data.as_bytes()[self.index] as char);
+            return Some(self.data.as_bytes()[self.index+1] as char);
         }
     }
 
@@ -448,6 +554,7 @@ impl Lexer {
         self.index += add_index;
         self.current_char = self.data.as_bytes()[self.index] as char;
         self.next_char = self.get_next_char();
+        self.last_token = self.get_last_token();
 
         if self.current_char == '\n' {
             self.position.row += 1;

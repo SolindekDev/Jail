@@ -33,3 +33,16 @@ pub fn print_error(error_kind: ErrorKind, message: String, exit_: bool) {
         exit(0x00);
     }
 }
+
+/*
+    Multiline comment
+
+    10 + 200 * 3000 / 40000 % 500000
+    1.9 + 2. * 3.000 / 4.310 % 5.10
+    import "jail/std"
+    println("Hello, World!")
+    fn main() {
+
+    }
+    // Comment
+*/

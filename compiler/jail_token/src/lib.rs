@@ -48,6 +48,7 @@ pub struct TokenPos {
     pub col: i32,
 }
 
+#[derive(PartialEq)]
 pub struct Token {
     pub kind: TokenKind,
     pub pos: TokenPos,
@@ -130,5 +131,9 @@ impl Token {
             , self.kind.get_pretty(), self.value, 
             self.base.get_pretty(), self.filename, 
             self.pos.row, self.pos.col)
+    }
+
+    pub fn copy(self) -> Self {
+        return self;
     }
 }
