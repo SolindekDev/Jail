@@ -1,4 +1,5 @@
 use ansi_term::Colour::Red;
+use jail_token::*;
 use std::process::*;
 
 pub enum ErrorKind {
@@ -28,6 +29,18 @@ impl ErrorKind {
 pub fn print_error(error_kind: ErrorKind, message: String, exit_: bool) {
     println!("{}: {}", 
         Red.paint(error_kind.to_string()).to_string(), 
+        message);
+    if exit_ == true {
+        exit(0x00);
+    }
+}
+
+pub fn print_error_with_pos(error_kind: ErrorKind, message: String, pos: TokenPos, filename: String, exit_: bool) {
+    println!("{}: {}:{}:{}: {}", 
+        Red.paint(error_kind.to_string()).to_string(), 
+        filename,
+        pos.row,
+        pos.col,
         message);
     if exit_ == true {
         exit(0x00);

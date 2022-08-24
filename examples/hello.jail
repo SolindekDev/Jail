@@ -1,5 +1,5 @@
-import "io"
+import "jail/std"
 
-fn main() {
+fun main() {
     println("Hello")
 }

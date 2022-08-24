@@ -1,11 +1,13 @@
 use jail_token::*;
 use jail_error::*;
+use std::process::*;
 
 const IDENTIFIER_CONSTANTS: &str = "abcdefghijklmnopqrstuvwxyABCDEFGHIJKLMNOPQRSTUVXYZ_@$";
 const DECIMAL_DIGITS_CONSTANTS: &str = "1234567890";
 const HEXADECIMAL_DIGITS_CONSTANTS: &str = "1234567890abcdefABCDEF";
 const OCTALS_DIGITS_CONSTANTS: &str = "1234567890abcdefABCDEF";
 const BINARY_DIGITS_CONSTANTS: &str = "01";
+const SYMBOLS_CONSTANTS: &str = "(){}+-*/%=<>!|&?:";
 
 pub struct LexerPosition {
     pub filename: String,
@@ -110,40 +112,36 @@ impl Lexer {
     }
 
     pub fn start(&mut self) {
-        for index in 0..self.data.len() {
-            self.index = index;
+        while self.index < self.data.len() {
             self.advance(0);
 
             if self.current_char == '\0' {
-                println!("\\0 here");
                 break;
             } else if self.current_char == '\n' {
-                println!("newline");
                 self.newline();
             } else if self.current_char == '/' 
                 && self.next_char == Some('*') 
                 && self.is_comment_opened_inline == false 
                 && self.is_comment_opened_multiline == false {
-                println!("multi line comment");
                 self.comment_multiline_open();
             } else if self.current_char == '*' 
                 && self.next_char == Some('/') 
                 && self.is_comment_opened_inline == false 
                 && self.is_comment_opened_multiline == true {
-                println!("multi line comment close");
                 self.comment_multiline_close();
+                self.index += 1;
                 continue;
             } else if self.is_comment_opened_multiline == true {
+                self.index += 1;
                 continue;
             } else if self.current_char == '/'
                 && self.next_char == Some('/')
                 && self.is_comment_opened_inline == false {
-                println!("comment open");
                 self.comment_inline_open();
             } else if self.is_comment_opened_inline == true {
+                self.index += 1;
                 continue;
             } else if self.current_char == '"' {
-                println!("string creator");
                 self.string_creator();
             } else if self.is_string_opened == true {
                 match self.tokens.last_mut() {
@@ -155,40 +153,144 @@ impl Lexer {
             } else if self.is_whitespace(self.current_char) {
                 self.whitespace();
             } else if self.is_identifier_char(self.current_char) {
-                println!("identifier");
                 self.identifier();
+            } else if self.is_symbol(self.current_char) {
+                self.symbol();
+            } else if self.is_digit(self.current_char) {
+                self.number();
+            } else if self.current_char == '.' {
+                self.float();
             } else {
-                let kind = self.get_kind();
-                match kind {
-                    TokenKind::None => {
-                        if self.was_comment_open_in_last_tok == false {
-                            print_error(
-                                ErrorKind::UnsupportedCharError, 
-                                format!("{} ({}) unsupported char", 
-                                    self.current_char, 
-                                    self.current_char as u8),
-                                true);
-                        }
-                    },
-                    _ => {
-                        self.tokens.push(Token::new(
-                            kind,
-                            "symbol".to_string(),
-                            self.position.filename.clone(),
-                            self.position.row,
-                            self.position.col,
-                            NumberBase::None
-                        ));
-                    }
-                }
+                print_error(
+                    ErrorKind::UnsupportedCharError, 
+                    format!("{} ({}) unsupported char", 
+                        self.current_char, 
+                        self.current_char as u8),
+                    true);
             }     
 
-            if self.was_comment_open_in_last_tok == true {
-                self.was_comment_open_in_last_tok = false;
-            }
+            self.index += 1;
         }
 
         self.print_tokens();
+        self.is_error_exit();
+    }
+
+    pub fn is_error_exit(&self) {
+        if self.is_error == true {
+            exit(0x01);
+        }
+    }
+
+    pub fn float(&mut self) {
+        if self.last_token.kind == TokenKind::None {
+            self.tokens.push(Token::new(
+                TokenKind::FloatLiteral,
+                "0.".to_string(),
+                self.position.filename.clone(),
+                self.position.row,
+                self.position.col,
+                NumberBase::Decimal
+            ));
+            self.is_space = false;
+        } else {
+            if self.last_token.kind == TokenKind::IntLiteral && self.is_space == false {
+                let mut last_token = self.tokens.pop().unwrap();
+                last_token.value.push(self.current_char);
+                last_token.kind = TokenKind::FloatLiteral;
+                self.tokens.push(last_token);
+                self.is_space = false;
+            } else {
+                self.tokens.push(Token::new(
+                    TokenKind::Dot,
+                    self.current_char.to_string(),
+                    self.position.filename.clone(),
+                    self.position.row,
+                    self.position.col,
+                    NumberBase::Decimal
+                ));
+                self.is_space = false;
+            }
+        }
+    }
+
+    pub fn number(&mut self) {
+        if self.last_token.kind == TokenKind::None {
+            self.tokens.push(Token::new(
+                TokenKind::IntLiteral,
+                self.current_char.to_string(),
+                self.position.filename.clone(),
+                self.position.row,
+                self.position.col,
+                NumberBase::Decimal
+            ));
+            self.is_space = false;
+        } else {
+
+            if self.is_space == false {
+                if self.last_token.kind == TokenKind::IntLiteral {
+                    // self.tokens
+                    //     .last()
+                    //     .cloned()
+                    //     .unwrap()
+                    //     .value
+                    //     .push(self.current_char);
+                    let mut last_token = self.tokens.pop().unwrap();
+                    last_token.value.push(self.current_char);
+                    self.tokens.push(last_token);
+                    self.is_space = false;
+                } else if self.last_token.kind == TokenKind::FloatLiteral {
+                    // self.tokens
+                    //     .last()
+                    //     .cloned()
+                    //     .unwrap()
+                    //     .value
+                    //     .push(self.current_char);
+                    let mut last_token = self.tokens.pop().unwrap();
+                    last_token.value.push(self.current_char);
+                    self.tokens.push(last_token);
+                    self.is_space = false;
+                } else if self.last_token.kind == TokenKind::Identifier && self.is_space == false {
+                    // self.tokens
+                    //     .last()
+                    //     .cloned()
+                    //     .unwrap()
+                    //     .value
+                    //     .push(self.current_char);
+                    let mut last_token = self.tokens.pop().unwrap();
+                    last_token.value.push(self.current_char);
+                    last_token.kind = TokenKind::Identifier;
+                    self.tokens.push(last_token);
+                    self.is_space = false;
+                } else if self.last_token.kind == TokenKind::Dot {
+                    let mut last_token = self.tokens.pop().unwrap();
+                    last_token.value.push(self.current_char);
+                    last_token.kind = TokenKind::FloatLiteral;
+                    self.tokens.push(last_token);
+                    self.is_space = false;
+                } else {
+                    self.tokens.push(Token::new(
+                        TokenKind::IntLiteral,
+                        self.current_char.to_string(),
+                        self.position.filename.clone(),
+                        self.position.row,
+                        self.position.col,
+                        NumberBase::Decimal
+                    ));
+                    self.is_space = false; 
+                }
+            } else {
+                self.tokens.push(Token::new(
+                    TokenKind::IntLiteral,
+                    self.current_char.to_string(),
+                    self.position.filename.clone(),
+                    self.position.row,
+                    self.position.col,
+                    NumberBase::Decimal
+                ));
+                self.is_space = false; 
+            }
+        }
     }
 
     pub fn get_last_token(&self) -> Token {
@@ -204,11 +306,9 @@ impl Lexer {
                 }
             }
         }
-
     }
 
     pub fn identifier(&mut self) {
-        println!("{}", self.last_token.kind == TokenKind::None);
         if self.last_token.kind == TokenKind::None {
             self.tokens.push(Token::new(
                 TokenKind::Identifier,
@@ -291,213 +391,370 @@ impl Lexer {
             .is_some();
     }
 
-    pub fn get_kind(&mut self) -> TokenKind {
-        match self.current_char { 
-            '(' => TokenKind::LeftParen,
-            ')' => TokenKind::RightParen,
-            '{' => TokenKind::LeftCurlyBrackets,
-            '}' => TokenKind::RightCurlyBrackets,
-            '+' => {
-                match self.next_char {
-                    Some(c) => {
-                        let c = self.next_char
-                            .unwrap();
+    // is char a operator char
+    pub fn is_symbol(&self, c: char) -> bool {
+        return SYMBOLS_CONSTANTS
+            .to_string()
+            .find(c)
+            .is_some();
+    }
 
-                        if c == '=' {
+    pub fn push_symbol_token(&mut self, kind: TokenKind, value: &str) {
+        self.tokens.push(Token::new(
+            kind,
+            value.to_string(),
+            self.position.filename.clone(),
+            self.position.row,
+            self.position.col,
+            NumberBase::None
+        ));
+    }
+
+    pub fn symbol(&mut self) {
+        match self.current_char {
+            '(' => self.push_symbol_token(TokenKind::LeftParen, "("),
+            ')' => self.push_symbol_token(TokenKind::RightParen, ")"),
+            '{' => self.push_symbol_token(TokenKind::LeftCurlyBrackets, "{"),
+            '}' => self.push_symbol_token(TokenKind::RightCurlyBrackets, "}"),
+            '+' => {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '+' {
+                            self.push_symbol_token(TokenKind::Increment, "++");
                             self.advance(1);
-                            return TokenKind::AddAssignment;
-                        } else if c == '+' {
-                            return TokenKind::Increment;
-                        } else if self.is_whitespace(c) {
-                            return TokenKind::Plus;
+                        } else if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::AddAssignment, "+=");
+                            self.advance(1);
                         } else {
-                            print_error(
+                            print_error_with_pos(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '+'", 
-                                    c), 
-                                true
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
                             );
-                            return TokenKind::None;
                         }
+                    } else {
+                        self.push_symbol_token(TokenKind::Plus, "+");
                     }
-                    None => {
-                        return TokenKind::Plus;
-                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Plus, "+");
                 }
             },
             '-' => {
-                match self.next_char {
-                    Some(c) => {
-                        if c == '=' {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '-' {
+                            self.push_symbol_token(TokenKind::Decrement, "--");
                             self.advance(1);
-                            return TokenKind::SubstractAssignment;
-                        } else if c == '-' {
-                            return TokenKind::Decrement;
-                        } else if self.is_whitespace(c) {
-                            return TokenKind::Minus;
+                        } else if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::SubstractAssignment, "-=");
+                            self.advance(1);
                         } else {
-                            print_error(
+                            print_error_with_pos(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '-'", 
-                                    c), 
-                                true
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
                             );
-                            return TokenKind::None;
                         }
+                    } else {
+                        self.push_symbol_token(TokenKind::Minus, "-");
                     }
-                    None => {
-                        return TokenKind::Minus;
-                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Minus, "-");
                 }
             },
             '*' => {
-                match self.next_char {
-                    Some(c) => {
-                        if c == '=' {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::MultiplyAssignment, "*=");
                             self.advance(1);
-                            return TokenKind::MultiplyAssignment;
-                        } else if self.is_whitespace(c) {
-                            return TokenKind::Multiply;
                         } else {
-                            print_error(
+                            print_error_with_pos(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '*'", 
-                                    c), 
-                                true
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
                             );
-                            return TokenKind::None;
                         }
+                    } else {
+                        self.push_symbol_token(TokenKind::Multiply, "*");
                     }
-                    None => {
-                        return TokenKind::Multiply;
-                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Multiply, "*");
                 }
-            },
+            }, 
             '/' => {
-                match self.next_char {
-                    Some(c) => {
-                        if c == '=' {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::DivideAssignment, "/=");
                             self.advance(1);
-                            return TokenKind::DivideAssignment;
-                        } else if self.is_whitespace(c) && self.was_comment_open_in_last_tok == false {
-                            return TokenKind::Divide;
-                        } else if self.is_whitespace(c) && self.was_comment_open_in_last_tok == true {
-                            return TokenKind::None;
                         } else {
-                            print_error(
+                            print_error_with_pos(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '/'", 
-                                    c), 
-                                true
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
                             );
-                            return TokenKind::None;
                         }
+                    } else {
+                        self.push_symbol_token(TokenKind::Divide, "/");
                     }
-                    None => {
-                        if self.was_comment_open_in_last_tok == false {
-                            return TokenKind::Divide;
-                        } else {
-                            return TokenKind::None;
-                        }
-                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Divide, "/");
                 }
             },
             '%' => {
-                match self.next_char {
-                    Some(c) => {
-                        if c == '=' {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::ModulusAssignment, "%=");
                             self.advance(1);
-                            return TokenKind::ModulusAssignment;
-                        } else if self.is_whitespace(c) {
-                            return TokenKind::Modulus;
                         } else {
-                            print_error(
+                            print_error_with_pos(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '%'", 
-                                    c), 
-                                true
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
                             );
-                            return TokenKind::None;
                         }
+                    } else {
+                        self.push_symbol_token(TokenKind::Modulus, "%");
                     }
-                    None => {
-                        return TokenKind::Modulus;
-                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Modulus, "%");
                 }
             },
             '=' => {
-                match self.next_char {
-                    Some(c) => {
-                        if c == '=' {
-                            return TokenKind::Equals;
-                        } else if self.is_whitespace(c) {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::Equals, "==");
                             self.advance(1);
-                            return TokenKind::Assignment;
                         } else {
-                            print_error(
+                            print_error_with_pos(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '='", 
-                                    c), 
-                                true
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
                             );
-                            return TokenKind::None;
                         }
+                    } else {
+                        self.push_symbol_token(TokenKind::Assignment, "=");
                     }
-                    None => {
-                        return TokenKind::Assignment;
-                    }
-                }
-            },
-            '>' => {
-                match self.next_char {
-                    Some(c) => {
-                        if c == '=' {
-                            return TokenKind::BiggerThanOrEquals;
-                        } else if self.is_whitespace(c) {
-                            return TokenKind::BiggerThan;
-                        } else {
-                            print_error(
-                                ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '>'", 
-                                    c), 
-                                true
-                            );
-                            return TokenKind::None;
-                        }
-                    }
-                    None => {
-                        return TokenKind::BiggerThan;
-                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Assignment, "=");
                 }
             },
             '<' => {
-                match self.next_char {
-                    Some(c) => {
-                        if c == '=' {
-                            return TokenKind::LessThanOrEquals;
-                        } else if self.is_whitespace(c) {
-                            return TokenKind::LessThan;
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::LessThanOrEquals, "<=");
+                            self.advance(1);
                         } else {
-                            print_error(
+                            print_error_with_pos(
                                 ErrorKind::SyntaxError, 
-                                format!("invalid syntax, unexpected use of {} after '<'", 
-                                    c), 
-                                true
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
                             );
-                            return TokenKind::None;
                         }
+                    } else {
+                        self.push_symbol_token(TokenKind::LessThan, "<");
                     }
-                    None => {
-                        return TokenKind::LessThan;
+                } else {
+                    self.push_symbol_token(TokenKind::LessThan, "<");
+                }
+            }
+            '>' => {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::BiggerThanOrEquals, ">=");
+                            self.advance(1);
+                        } else {
+                            print_error_with_pos(
+                                ErrorKind::SyntaxError, 
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
+                            );
+                        }
+                    } else {
+                        self.push_symbol_token(TokenKind::BiggerThan, ">");
                     }
+                } else {
+                    self.push_symbol_token(TokenKind::BiggerThan, ">");
                 }
             },
-            '|' => TokenKind::Or,
-            '&' => TokenKind::And,
-            '!' => TokenKind::Bang,
-            '?' => TokenKind::QuestionMark,
-            ':' => TokenKind::Colon,
-            _ => TokenKind::None,
+            '!' => {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        if self.next_char.unwrap() == '=' {
+                            self.push_symbol_token(TokenKind::NotEquals, "!=");
+                            self.advance(1);
+                        } else {
+                            print_error_with_pos(
+                                ErrorKind::SyntaxError, 
+                                format!("unexpected use of {} after {}",
+                                    self.next_char.unwrap(),
+                                    self.current_char),
+                                TokenPos {
+                                    row: self.position.row,
+                                    col: self.position.col,
+                                },
+                                self.position.filename.clone(),
+                                false
+                            );
+                        }
+                    } else {
+                        self.push_symbol_token(TokenKind::Bang, "!");
+                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Bang, "!");
+                }
+            },
+            '|' => {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        print_error_with_pos(
+                            ErrorKind::SyntaxError, 
+                            format!("unexpected use of {} after {}",
+                                self.next_char.unwrap(),
+                                self.current_char),
+                            TokenPos {
+                                row: self.position.row,
+                                col: self.position.col,
+                            },
+                            self.position.filename.clone(),
+                            false
+                        );
+                    } else {
+                        self.push_symbol_token(TokenKind::Or, "|");
+                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Or, "|");
+                }
+            },
+            '&' => {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        print_error_with_pos(
+                            ErrorKind::SyntaxError, 
+                            format!("unexpected use of {} after {}",
+                                self.next_char.unwrap(),
+                                self.current_char),
+                            TokenPos {
+                                row: self.position.row,
+                                col: self.position.col,
+                            },
+                            self.position.filename.clone(),
+                            false
+                        );
+                    } else {
+                        self.push_symbol_token(TokenKind::And, "&");
+                    }
+                } else {
+                    self.push_symbol_token(TokenKind::And, "&");
+                }
+            },
+            '?' => {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        print_error_with_pos(
+                            ErrorKind::SyntaxError, 
+                            format!("unexpected use of {} after {}",
+                                self.next_char.unwrap(),
+                                self.current_char),
+                            TokenPos {
+                                row: self.position.row,
+                                col: self.position.col,
+                            },
+                            self.position.filename.clone(),
+                            false
+                        );
+                    } else {
+                        self.push_symbol_token(TokenKind::QuestionMark, "?");
+                    }
+                } else {
+                    self.push_symbol_token(TokenKind::QuestionMark, "?");
+                }
+            },
+            ':' => {
+                if self.next_char.is_some() {
+                    if self.is_symbol(self.next_char.unwrap()) {
+                        print_error_with_pos(
+                            ErrorKind::SyntaxError, 
+                            format!("unexpected use of {} after {}",
+                                self.next_char.unwrap(),
+                                self.current_char),
+                            TokenPos {
+                                row: self.position.row,
+                                col: self.position.col,
+                            },
+                            self.position.filename.clone(),
+                            false
+                        );
+                    } else {
+                        self.push_symbol_token(TokenKind::Colon, ":");
+                    }
+                } else {
+                    self.push_symbol_token(TokenKind::Colon, ":");
+                }
+            }
+            _ => {},
+            // _ => unimplemented!(),
         }
     }
 
