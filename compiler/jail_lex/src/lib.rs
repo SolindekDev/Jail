@@ -1,3 +1,8 @@
+/*
+    Jail programming language
+    Copyright (C) 2022 SolindekDev <ytsolindekttv@gmail.com>
+*/
+
 use jail_token::*;
 use jail_error::*;
 use std::process::*;
@@ -857,4 +862,3 @@ impl Lexer {
         }
     }
 }
-

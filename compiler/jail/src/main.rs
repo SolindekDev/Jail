@@ -1,6 +1,12 @@
+/*
+    Jail programming language
+    Copyright (C) 2022 SolindekDev <ytsolindekttv@gmail.com>
+*/
+
 use ansi_term::Colour::{ Yellow };
 use jail_args_parser::*;
 use jail_lex::*;
+use jail_parse::*;
 use jail_error::*;
 use std::env::*;
 use std::env::consts::*;
@@ -36,8 +42,11 @@ fn main() {
                 let value = fs::read_to_string(&args_parser.filename)
                     .expect("file not found!");
 
-                let lexer = Lexer::new(value, args_parser.filename)
-                    .start();
+                let mut lexer = Lexer::new(value, args_parser.filename);
+                lexer.start();
+
+                let mut parser = Parser::new(lexer);
+                parser.start();
             } else {
                 print_error(ErrorKind::FileError, format!("\"{}\" is a directory", &args_parser.filename), true);
             }
