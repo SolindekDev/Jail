@@ -57,6 +57,7 @@ impl ArgsParser {
                 match flag.as_str() {
                     "h" | "he" | "hel" | "help"                                  => flags.push("help".to_string()),
                     "v" | "ve" | "ver" | "vers" | "versi" | "versio" | "version" => flags.push("version".to_string()),
+                    "l" | "le" | "lex" | "lexe" | "lexer"                        => flags.push("lexer".to_string()),       
                     _ => { 
                         print_error(ErrorKind::ArgsError, format!("unknown flag \"{}\" in arguments", arg), true);
                     }

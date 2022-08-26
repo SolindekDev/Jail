@@ -1,5 +1,5 @@
-import "jail/std"
+import "jail/jail/std"
 
-fun main() {
-    println("Hello")
-}
+// fun main() {
+//     println("Hello")
+// }

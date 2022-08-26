@@ -39,6 +39,7 @@ pub enum TokenKind {
     Colon,
     Dot,
     Newline,
+    Eof,
     None
 }
 
@@ -133,6 +134,7 @@ impl TokenKind {
             TokenKind::Colon => "Colon".to_string(),
             TokenKind::Dot => "Dot".to_string(),
             TokenKind::Newline => "Newline".to_string(),
+            TokenKind::Eof => "Eof".to_string(),
             TokenKind::None => "None".to_string(),
         }
     }

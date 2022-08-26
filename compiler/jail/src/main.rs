@@ -42,8 +42,8 @@ fn main() {
                 let value = fs::read_to_string(&args_parser.filename)
                     .expect("file not found!");
 
-                let mut lexer = Lexer::new(value, args_parser.filename);
-                lexer.start();
+                let mut lexer = Lexer::new(value, args_parser.filename.clone());
+                lexer.start(args_parser.is_there_flag("lexer"));
 
                 let mut parser = Parser::new(lexer);
                 parser.start();

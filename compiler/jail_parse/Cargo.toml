@@ -10,3 +10,4 @@ jail_token = {path = "../jail_token"}
 jail_error = {path = "../jail_error"}
 jail_lex = {path = "../jail_lex"}
 jail_ast = {path = "../jail_ast"}
+ansi_term = "0.12"

@@ -14,6 +14,7 @@ const OCTALS_DIGITS_CONSTANTS: &str = "1234567890abcdefABCDEF";
 const BINARY_DIGITS_CONSTANTS: &str = "01";
 const SYMBOLS_CONSTANTS: &str = "(){}+-*/%=<>!|&?:";
 
+#[derive(Clone, PartialEq)]
 pub struct LexerPosition {
     pub filename: String,
     pub row: i32,
@@ -34,23 +35,24 @@ impl LexerPosition {
     }
 }
 
+#[derive(Clone, PartialEq)]
 pub struct Lexer {
-    data: String,
-    position: LexerPosition,
-    tokens: Vec<Token>,
-    last_token: Token,
-    index: usize,
-    current_char: char,
-    next_char: Option<char>,
-    is_error: bool,
-    is_space: bool,
-    is_comment_opened_inline: bool,
-    is_comment_opened_multiline: bool,
-    was_comment_open_in_last_tok: bool,
-    is_hexadecimal_opened: bool,
-    is_octal_opened: bool,
-    is_binary_opened: bool,
-    is_string_opened: bool,
+    pub data: String,
+    pub position: LexerPosition,
+    pub tokens: Vec<Token>,
+    pub last_token: Token,
+    pub index: usize,
+    pub current_char: char,
+    pub next_char: Option<char>,
+    pub is_error: bool,
+    pub is_space: bool,
+    pub is_comment_opened_inline: bool,
+    pub is_comment_opened_multiline: bool,
+    pub was_comment_open_in_last_tok: bool,
+    pub is_hexadecimal_opened: bool,
+    pub is_octal_opened: bool,
+    pub is_binary_opened: bool,
+    pub is_string_opened: bool,
 }
 
 impl Lexer {
@@ -116,7 +118,7 @@ impl Lexer {
         }
     }
 
-    pub fn start(&mut self) {
+    pub fn start(&mut self, is_l_tag: bool) {
         while self.index < self.data.len() {
             self.advance(0);
 
@@ -177,8 +179,20 @@ impl Lexer {
             self.index += 1;
         }
 
-        self.print_tokens();
+        self.add_eof();
+        if is_l_tag { self.print_tokens(); }
         self.is_error_exit();
+    }
+
+    pub fn add_eof(&mut self) {
+        self.tokens.push(Token::new(
+            TokenKind::Eof,
+            "\0".to_string(),
+            self.position.filename.clone(),
+            self.position.row,
+            self.position.col,
+            NumberBase::None
+        ));
     }
 
     pub fn is_error_exit(&self) {
