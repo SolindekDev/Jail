@@ -34,32 +34,15 @@ impl Parser {
         self.current_token = self.lexer.tokens[self.index].clone();
     }
 
+/*
     pub fn parse_import(&mut self) {
         self.advance(1);
         if self.current_token.kind == TokenKind::StringLiteral {
             let package_name: String = self.current_token.value.clone();
-            if package_name.starts_with("jail/") {
-                let mut package_built_in: Vec<&str> = package_name
-                    .split("jail/")
-                    .collect();
-                package_built_in.remove(0);
-
-                if package_built_in.len() == 1 {
-                    println!("{:?}, {}", package_built_in, package_built_in.len());
-                } else {
-                    print_error_with_pos(
-                        ErrorKind::SyntaxError,
-                        format!("unknown package name `{}`",
-                            self.current_token.value.clone()),
-                        self.current_token.pos.clone(),
-                        self.current_token.filename.clone(),
-                        false
-                    );
-                    self.is_error = true;
-                    self.advance(1);
-                }
+            if package_name == "std.ja" {
+                // include std.ja file
             } else {
-                // Import local file
+
             }
             self.advance(1);
         } else {
@@ -76,10 +59,11 @@ impl Parser {
             self.advance(1);
         }
     }
+*/
 
     pub fn parse_identifier(&mut self) {
         match self.current_token.value.as_str() {
-            KEYWORD_IMPORT => self.parse_import(),
+            // KEYWORD_IMPORT => self.parse_import(),
             _ => unimplemented!()
         }
     }
