@@ -1,0 +1,157 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Mao",
+	"patterns": [
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#strings"
+		},
+		{
+			"include": "#numbers"
+		},
+		{
+			"include": "#reserved-words"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#block-comments"
+		},
+		{
+			"include": "#types"
+		},
+		{
+			"include": "#chars"
+		}
+	],
+	"repository": {
+		"operators": {
+			"patterns": [
+				{
+					"comment": "Operator",
+					"match": "\\b(+|+=|->|-|-=|++|--|*|*=|/|/=)\\b"
+				}
+			]
+		},
+		"types": {
+			"patterns": [
+				{
+					"comment": "numeric types",
+					"match": "(?<![A-Za-z])(float|int)\\b",
+					"captures": {
+						"1": {
+							"name": "entity.name.type.numeric.mao"
+						}
+					}
+				},
+				{
+					"name": "entity.name.type.primitive.mao",
+					"match": "\\b(bool|char|string)\\b"
+				},
+				{
+					"match": "\\b(trait)\\s+([A-Z][A-Za-z0-9]*)\\b",
+					"captures": {
+						"1": {
+							"name": "storage.type.mao"
+						},
+						"2": {
+							"name": "entity.name.type.trait.mao"
+						}
+					}
+				},
+				{
+					"name": "entity.name.type.mao",
+					"match": "\\b[A-Z][A-Za-z0-9]*\\b"
+				}
+			]
+		},
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.mao",
+				"match": "\\b(proc|import|return|if|else|elif|while|continue|break|for|enum|match)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.mao",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [{
+					"name": "constant.character.escape.mao",
+					"match": "\\\\."
+			}]
+		},
+		"chars": {
+			"name": "string.quoted.double.mao",
+			"begin": "'",
+			"end": "'",
+			"patterns": [{
+					"name": "constant.character.escape.mao",
+					"match": "\\\\."
+			}]
+		},
+		"numbers": {
+			"patterns": [{
+				"name": "keyword.other.unit.suffix.integer.mao",
+				"match": "(^-?[0-9][0-9\\.]+$)"
+			}]
+		},
+		"reserved-words": {
+			"match": "\\b(print|printf|println|puts|putchar|input|i32|i16|i8|i64|i128|f32|f16|64|int|float|str)\\b",
+			"name": "entity.name.function.member.tpl"
+		},
+		"comments": {
+			"patterns": [
+				{
+					"comment": "doc comments, internal or external",
+					"name": "comment.line.documentation",
+					"match": "^\\s*//[/!]{1}.*"
+				},
+				{
+					"comment": "regular comments",
+					"name": "comment.line.double-slash",
+					"match": "\\s*//.*"
+				}
+			]
+		},
+		"block-comments": {
+			"patterns": [
+				{
+					"comment": "empty doc comment",
+					"name": "comment.block.documentation.mao",
+					"match": "/\\*[\\*!]{1}\\*/"
+				},
+				{
+					"comment": "empty block comment",
+					"name": "comment.block.mao",
+					"match": "/\\*\\*/"
+				},
+				{
+					"comment": "block doc comment",
+					"name": "comment.block.documentation.mao",
+					"begin": "/\\*[\\*!]{1}",
+					"end": "\\*/",
+					"patterns": [
+						{
+							"include": "#block-comments"
+						}
+					]
+				},
+				{
+					"comment": "block comment",
+					"name": "comment.block.mao",
+					"begin": "/\\*(?!\\*)",
+					"end": "\\*/",
+					"patterns": [
+						{
+							"include": "#block-comments"
+						}
+					]
+				}
+			]
+		}
+	},
+	"scopeName": "source.mao"
+}

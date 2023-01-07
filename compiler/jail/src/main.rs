@@ -1,18 +1,20 @@
 /*
     Jail programming language
-    Copyright (C) 2022 SolindekDev <ytsolindekttv@gmail.com>
+    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
 */
 
 use ansi_term::Colour::{ Yellow };
-use jail_args_parser::*;
-use jail_lex::*;
-use jail_parse::*;
-use jail_error::*;
+
 use std::env::*;
 use std::env::consts::*;
 use std::process::*;
 use std::path::*;
 use std::fs;
+
+use jail_args_parser::*;
+use jail_lex::*;
+use jail_parse::*;
+use jail_error::*;
 
 const VERSION_OF_COMPILER: &str = "1.0v";
 
@@ -45,8 +47,8 @@ fn main() {
                 let mut lexer = Lexer::new(value, args_parser.filename.clone());
                 lexer.start(args_parser.is_there_flag("lexer"));
 
-                let mut parser = Parser::new(lexer);
-                parser.start();
+                // let mut parser = Parser::new(lexer);
+                // parser.start();
             } else {
                 print_error(ErrorKind::FileError, format!("\"{}\" is a directory", &args_parser.filename), true);
             }

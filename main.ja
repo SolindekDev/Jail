@@ -1,4 +1,0 @@
-import "examples/package.ja" // Import from local
-import "io.ja" // Import library
-
-// ...

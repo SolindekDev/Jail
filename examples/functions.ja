@@ -1,0 +1,10 @@
+import "std.ja"
+
+proc foo() => str {
+    return "foo"
+}
+
+proc main() => int {
+    println(foo())
+    return 0
+}

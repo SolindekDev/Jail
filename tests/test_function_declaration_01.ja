@@ -1,0 +1,9 @@
+proc foo() -> i8 {
+
+}
+
+proc bar() -> bool {
+    
+}
+
+proc main() -> int

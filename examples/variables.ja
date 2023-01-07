@@ -1,0 +1,9 @@
+import "std.ja"
+
+proc main() => int {
+    int x = 32
+    int y = 0x5
+    int z = x + y
+    println("x + y = {}", z)
+    return 0
+}

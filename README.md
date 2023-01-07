@@ -1,26 +1,24 @@
-<div align="center">
-  <img src="./logo.png" alt="Logo" width="350" />
-</div>
+# Mao
+## About
+It's an simple compiled programming language written fully in Rust. Mao have very easy syntax, you can use it to write variouse applications, also is it memory safe. Mao have very easy to use documentation where you can find everything about mao syntax and other things.
+ 
+## Contributing
+If you want to contribute fork this repository and start writting some cool staff or do TODO's that are marked by this type of comment `// TODO: <what to todo>` so every developer know what to do
 
-# Jail Programming Language
-# About
-**Jail** is a compiled language to assembler, written in rust
-# Documentation
-If you more interested in Jail or you want to learn Jail go and check our [Documentation](https://github.com/SolindekDev/Jail/blob/main/Documentation/Introduction.md) 
-# Download
-How to download jail compiler? There a page about this topic [Here!](https://github.com/SolindekDev/Jail/blob/main/Documentation/Download/Download.md)
-# Folders
-- **compiler** - Source of compiler
-  - **jail** - Source code of main package in Jail
-  - **jail-lex** - Lexer is a lib that will take the file value and change it to token array
-  - **jail-token** - Have some important things that helps with tokens
-  - **jail-parser** - Parser is a program that is supposed to understand your code and return an AST (Abstract Syntax Tree)
-  - **jail-args_parser** - Parsing arguments
-  - **jail-ast** - Have utils for AST
-  - **jail-codegen** - Takes AST and return with code in assembly
-  - **jail-error** - Lib for printing error messages
-- **examples** - Examples of Jail Programming language
-- **docs** - Documentation of Jail Programming Language
-# Contributing
-If you wanna help in Jail Programming Language write to me on [Discord](https://discord.com/users/644446151210172447) or on other platforms [Contact With Solindek](https://solindek.tech/contact.html)
+## Documentation
+You can find our documentation in folder docs, language docs are in folder `docs/lang/` that's all. If you want to add something into our docs just contribute
 
+## Example syntax
+Example Mao program that will print out sum of 2 and 3 looks something like this:
+```go
+import "std.ja"
+
+proc main() => int {
+    println("Hello, World")
+    return 0
+}
+```
+More examples can be found in folder `/examples/`
+
+## How to build it?
+If you want to build mao interpreter and also c api lib on linux you can use bash file named `build.sh` this will output mao interpreter and c api in folder `output`

@@ -1,5 +1,5 @@
 /*
     Jail programming language
-    Copyright (C) 2022 SolindekDev <ytsolindekttv@gmail.com>
+    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
 */
 

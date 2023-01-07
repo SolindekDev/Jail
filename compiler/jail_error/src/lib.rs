@@ -1,6 +1,6 @@
 /*
     Jail programming language
-    Copyright (C) 2022 SolindekDev <ytsolindekttv@gmail.com>
+    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
 */
 
 use ansi_term::Colour::Red;
@@ -52,15 +52,17 @@ pub fn print_error_with_pos(error_kind: ErrorKind, message: String, pos: TokenPo
     }
 }
 
-/*
-    Multiline comment
-
-    10 + 200 * 3000 / 40000 % 500000
-    1.9 + 2. * 3.000 / 4.310 % 5.10
-    import "jail/std"
-    println("Hello, World!")
-    fn main() {
-
+pub fn print_error_with_line_and_pos(error_kind: ErrorKind, message: String, pos: TokenPos, filename: String, line: String, exit_: bool) {
+    println!("{}: {}:{}:{}: {}", 
+        Red.paint(error_kind.to_string()).to_string(), 
+        filename,
+        pos.row,
+        pos.col,
+        message);
+    println!("{} | ...", pos.row - 1);
+    println!("{} | {}", pos.row, line);
+    println!("{} | ...", pos.row + 1);
+    if exit_ == true {
+        exit(0x00);
     }
-    // Comment
-*/
+}

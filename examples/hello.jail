@@ -1,5 +1,0 @@
-import "jail/jail/std"
-
-// fun main() {
-//     println("Hello")
-// }

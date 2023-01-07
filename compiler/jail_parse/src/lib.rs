@@ -1,6 +1,6 @@
 /*
     Jail programming language
-    Copyright (C) 2022 SolindekDev <ytsolindekttv@gmail.com>
+    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
 */
 
 use jail_token::*;
@@ -8,9 +8,19 @@ use jail_error::*;
 use jail_lex::*;
 use jail_ast::*;
 use std::process::*;
-use ansi_term::Colour::Blue;
+use ansi_term::Colour::Cyan;
 
-const KEYWORD_IMPORT: &str = "import";
+const KEYWORDS: &'static [String] = &[
+    "proc".to_string(),
+    "import".to_string(),
+    "return".to_string()
+];
+
+// These const represent index of keyword in array 
+// above
+const KEYWORD_PROC:   i32 = 0;
+const KEYWORD_IMPORT: i32 = 1;
+const KEYWORD_RETURN: i32 = 2;
 
 pub struct Parser {
     lexer: Lexer,
@@ -34,36 +44,10 @@ impl Parser {
         self.current_token = self.lexer.tokens[self.index].clone();
     }
 
-/*
-    pub fn parse_import(&mut self) {
-        self.advance(1);
-        if self.current_token.kind == TokenKind::StringLiteral {
-            let package_name: String = self.current_token.value.clone();
-            if package_name == "std.ja" {
-                // include std.ja file
-            } else {
-
-            }
-            self.advance(1);
-        } else {
-            print_error_with_pos(
-                ErrorKind::SyntaxError,
-                format!("unexpected use of `{}` after `import` keyword. {}",
-                    self.current_token.kind.get_pretty(),
-                    Blue.paint("help: expected string that have value of file to import").to_string()),
-                self.current_token.pos.clone(),
-                self.current_token.filename.clone(),
-                false
-            );
-            self.is_error = true;
-            self.advance(1);
-        }
-    }
-*/
-
     pub fn parse_identifier(&mut self) {
         match self.current_token.value.as_str() {
             // KEYWORD_IMPORT => self.parse_import(),
+            // KEYWORD_FUNCTION => self.parse_function(),
             _ => unimplemented!()
         }
     }
