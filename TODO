@@ -1,0 +1,12 @@
+In this file developers of Jail will write things that need to be done!
+
+Write in here if you did edit this file:
+    - 7th January 2023 - SolindekDev
+
+Things to do:
+    - Write function declaration parser implementation 
+    - Write function call parser implementation
+    - Write function that will parse values in Jail, it will work something like this it will get 1 argument that will be an token kind type that will represents the token to end parsing (i'm so terrible on translating my thinks)
+    - Write implementation of variables
+    - Try to make an simple program with functions and variables to generate fully working assembly
+    - More to do things in a future
