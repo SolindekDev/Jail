@@ -1,6 +1,6 @@
 import "std.ja"
 
-proc main() => int {
+proc main() -> int {
     println("Hello, World")
     return 0
 }

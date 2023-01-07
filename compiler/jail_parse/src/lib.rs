@@ -10,10 +10,10 @@ use jail_ast::*;
 use std::process::*;
 use ansi_term::Colour::Cyan;
 
-const KEYWORDS: &'static [String] = &[
-    "proc".to_string(),
-    "import".to_string(),
-    "return".to_string()
+const KEYWORDS: &'static [&str] = &[
+    "proc",
+    "import",
+    "return"
 ];
 
 // These const represent index of keyword in array 
@@ -46,8 +46,6 @@ impl Parser {
 
     pub fn parse_identifier(&mut self) {
         match self.current_token.value.as_str() {
-            // KEYWORD_IMPORT => self.parse_import(),
-            // KEYWORD_FUNCTION => self.parse_function(),
             _ => unimplemented!()
         }
     }

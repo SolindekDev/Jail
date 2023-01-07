@@ -59,6 +59,7 @@ pub enum TokenKind {
     QuestionMark,
     Colon,
     Dot,
+    Arrow,
 
     // Other things
     Newline,
@@ -84,6 +85,12 @@ pub enum NumberBase {
 pub struct TokenPos {
     pub row: i32,
     pub col: i32,
+}
+
+impl TokenPos {
+    pub fn new(row: i32, col: i32) -> Self {
+        Self { row, col }
+    }
 }
 
 // This structure represents an token inside of file
@@ -146,6 +153,7 @@ impl TokenKind {
             TokenKind::Bang                 => "Bang".to_string(),
             TokenKind::QuestionMark         => "QuestionMark".to_string(),
             TokenKind::Colon                => "Colon".to_string(),
+            TokenKind::Arrow                => "Arrow".to_string(),
             TokenKind::Dot                  => "Dot".to_string(),
             TokenKind::Newline              => "Newline".to_string(),
             TokenKind::Eof                  => "Eof".to_string(),

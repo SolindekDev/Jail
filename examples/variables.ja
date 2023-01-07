@@ -1,6 +1,6 @@
 import "std.ja"
 
-proc main() => int {
+proc main() -> int {
     int x = 32
     int y = 0x5
     int z = x + y

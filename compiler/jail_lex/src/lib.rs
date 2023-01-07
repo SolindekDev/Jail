@@ -58,7 +58,7 @@ pub struct Lexer {
 impl Lexer {
     pub fn new(data: String, filename: String) -> Self{
         Self {
-            data: data, 
+            data: data.clone(), 
             position: LexerPosition::new(1, 0, filename.clone()),
             tokens: vec![],
             last_token: Token::new(TokenKind::None, "".to_string(), filename, 0, 0, NumberBase::None),
@@ -168,12 +168,16 @@ impl Lexer {
             } else if self.current_char == '.' {
                 self.float();
             } else {
-                print_error(
+                self.is_error = true; print_error_with_line_and_pos(
                     ErrorKind::UnsupportedCharError, 
-                    format!("{} ({}) unsupported char", 
-                        self.current_char, 
-                        self.current_char as u8),
-                    true);
+                    format!("{} ({}) unsupported char",
+                        self.next_char.unwrap(),
+                        self.current_char),
+                    TokenPos {
+                        row: self.position.row,
+                        col: self.position.col,
+                    }, self.position.filename.clone(), 
+                    lines[(self.position.row - 1) as usize].to_string(), true)
             }     
 
             self.index += 1;
@@ -248,34 +252,16 @@ impl Lexer {
 
             if self.is_space == false {
                 if self.last_token.kind == TokenKind::IntLiteral {
-                    // self.tokens
-                    //     .last()
-                    //     .cloned()
-                    //     .unwrap()
-                    //     .value
-                    //     .push(self.current_char);
                     let mut last_token = self.tokens.pop().unwrap();
                     last_token.value.push(self.current_char);
                     self.tokens.push(last_token);
                     self.is_space = false;
                 } else if self.last_token.kind == TokenKind::FloatLiteral {
-                    // self.tokens
-                    //     .last()
-                    //     .cloned()
-                    //     .unwrap()
-                    //     .value
-                    //     .push(self.current_char);
                     let mut last_token = self.tokens.pop().unwrap();
                     last_token.value.push(self.current_char);
                     self.tokens.push(last_token);
                     self.is_space = false;
                 } else if self.last_token.kind == TokenKind::Identifier && self.is_space == false {
-                    // self.tokens
-                    //     .last()
-                    //     .cloned()
-                    //     .unwrap()
-                    //     .value
-                    //     .push(self.current_char);
                     let mut last_token = self.tokens.pop().unwrap();
                     last_token.value.push(self.current_char);
                     last_token.kind = TokenKind::Identifier;
@@ -430,6 +416,7 @@ impl Lexer {
     }
 
     pub fn symbol(&mut self) {
+        let lines: Vec<&str> = self.data.lines().collect();
         match self.current_char {
             '(' => self.push_symbol_token(TokenKind::LeftParen, "("),
             ')' => self.push_symbol_token(TokenKind::RightParen, ")"),
@@ -445,7 +432,7 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::AddAssignment, "+=");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -453,10 +440,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::Plus, "+");
@@ -474,8 +459,11 @@ impl Lexer {
                         } else if self.next_char.unwrap() == '=' {
                             self.push_symbol_token(TokenKind::SubstractAssignment, "-=");
                             self.advance(1);
+                        }  else if self.next_char.unwrap() == '>' {
+                            self.push_symbol_token(TokenKind::Arrow, "->");
+                            self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -483,10 +471,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::Minus, "-");
@@ -502,7 +488,7 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::MultiplyAssignment, "*=");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -510,10 +496,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::Multiply, "*");
@@ -529,7 +513,7 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::DivideAssignment, "/=");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -537,10 +521,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::Divide, "/");
@@ -556,7 +538,7 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::ModulusAssignment, "%=");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -564,10 +546,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::Modulus, "%");
@@ -583,7 +563,7 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::Equals, "==");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -591,10 +571,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::Assignment, "=");
@@ -610,7 +588,7 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::LessThanOrEquals, "<=");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -618,10 +596,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::LessThan, "<");
@@ -637,18 +613,16 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::BiggerThanOrEquals, ">=");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
-                                ErrorKind::SyntaxError, 
-                                format!("unexpected use of {} after {}",
-                                    self.next_char.unwrap(),
-                                    self.current_char),
-                                TokenPos {
-                                    row: self.position.row,
-                                    col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                            self.is_error = true; print_error_with_line_and_pos(
+                                    ErrorKind::SyntaxError, 
+                                    format!("unexpected use of {} after {}",
+                                        self.next_char.unwrap(),
+                                        self.current_char),
+                                    TokenPos {
+                                        row: self.position.row,
+                                        col: self.position.col,
+                                    }, self.position.filename.clone(), 
+                                    lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::BiggerThan, ">");
@@ -664,7 +638,7 @@ impl Lexer {
                             self.push_symbol_token(TokenKind::NotEquals, "!=");
                             self.advance(1);
                         } else {
-                            print_error_with_pos(
+                            self.is_error = true; print_error_with_line_and_pos(
                                 ErrorKind::SyntaxError, 
                                 format!("unexpected use of {} after {}",
                                     self.next_char.unwrap(),
@@ -672,10 +646,8 @@ impl Lexer {
                                 TokenPos {
                                     row: self.position.row,
                                     col: self.position.col,
-                                },
-                                self.position.filename.clone(),
-                                false
-                            );
+                                }, self.position.filename.clone(), 
+                                lines[(self.position.row - 1) as usize].to_string(), false)
                         }
                     } else {
                         self.push_symbol_token(TokenKind::Bang, "!");
@@ -687,7 +659,7 @@ impl Lexer {
             '|' => {
                 if self.next_char.is_some() {
                     if self.is_symbol(self.next_char.unwrap()) {
-                        print_error_with_pos(
+                        self.is_error = true; print_error_with_line_and_pos(
                             ErrorKind::SyntaxError, 
                             format!("unexpected use of {} after {}",
                                 self.next_char.unwrap(),
@@ -695,10 +667,8 @@ impl Lexer {
                             TokenPos {
                                 row: self.position.row,
                                 col: self.position.col,
-                            },
-                            self.position.filename.clone(),
-                            false
-                        );
+                            }, self.position.filename.clone(), 
+                            lines[(self.position.row - 1) as usize].to_string(), false)
                     } else {
                         self.push_symbol_token(TokenKind::Or, "|");
                     }
@@ -709,7 +679,7 @@ impl Lexer {
             '&' => {
                 if self.next_char.is_some() {
                     if self.is_symbol(self.next_char.unwrap()) {
-                        print_error_with_pos(
+                        self.is_error = true; print_error_with_line_and_pos(
                             ErrorKind::SyntaxError, 
                             format!("unexpected use of {} after {}",
                                 self.next_char.unwrap(),
@@ -717,10 +687,8 @@ impl Lexer {
                             TokenPos {
                                 row: self.position.row,
                                 col: self.position.col,
-                            },
-                            self.position.filename.clone(),
-                            false
-                        );
+                            }, self.position.filename.clone(), 
+                            lines[(self.position.row - 1) as usize].to_string(), false)
                     } else {
                         self.push_symbol_token(TokenKind::And, "&");
                     }
@@ -731,7 +699,7 @@ impl Lexer {
             '?' => {
                 if self.next_char.is_some() {
                     if self.is_symbol(self.next_char.unwrap()) {
-                        print_error_with_pos(
+                        self.is_error = true; print_error_with_line_and_pos(
                             ErrorKind::SyntaxError, 
                             format!("unexpected use of {} after {}",
                                 self.next_char.unwrap(),
@@ -739,10 +707,8 @@ impl Lexer {
                             TokenPos {
                                 row: self.position.row,
                                 col: self.position.col,
-                            },
-                            self.position.filename.clone(),
-                            false
-                        );
+                            }, self.position.filename.clone(), 
+                            lines[(self.position.row - 1) as usize].to_string(), false)
                     } else {
                         self.push_symbol_token(TokenKind::QuestionMark, "?");
                     }
@@ -753,7 +719,7 @@ impl Lexer {
             ':' => {
                 if self.next_char.is_some() {
                     if self.is_symbol(self.next_char.unwrap()) {
-                        print_error_with_pos(
+                        self.is_error = true; print_error_with_line_and_pos(
                             ErrorKind::SyntaxError, 
                             format!("unexpected use of {} after {}",
                                 self.next_char.unwrap(),
@@ -761,10 +727,8 @@ impl Lexer {
                             TokenPos {
                                 row: self.position.row,
                                 col: self.position.col,
-                            },
-                            self.position.filename.clone(),
-                            false
-                        );
+                            }, self.position.filename.clone(), 
+                            lines[(self.position.row - 1) as usize].to_string(), false)
                     } else {
                         self.push_symbol_token(TokenKind::Colon, ":");
                     }

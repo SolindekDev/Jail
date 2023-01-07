@@ -6,4 +6,6 @@ proc bar() -> bool {
     
 }
 
-proc main() -> int
+proc main() -> int {
+    
+}

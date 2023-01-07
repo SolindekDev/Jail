@@ -3,7 +3,9 @@
     Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
 */
 
-#[derive(Clone, PartialEq)]
+use std::vec::Vec;
+
+#[derive(Clone, PartialEq, Debug, Default)]
 pub enum TypesAST {
     // Ints
     I8,
@@ -18,7 +20,11 @@ pub enum TypesAST {
 
     // Other
     STR,
-    BOOL
+    BOOL,
+
+    // None
+    #[default]
+    NONE,
 }
 
 impl TypesAST {
@@ -38,20 +44,26 @@ impl TypesAST {
             // Other
             TypesAST::STR => "str".to_string(),
             TypesAST::BOOL => "bool".to_string(),
+            TypesAST::NONE => "none".to_string(),
         }
     } 
 }
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Debug, Default)]
 pub enum NodeKindAST {
-    FUNCTION_DECLARATION
+    FunctionDeclaration,
+
+    #[default]
+    NoneKind,
 }
 
+#[derive(Debug)]
 pub struct FunctionArgs {
     pub name: String,
     pub argument_type: TypesAST,
 }
 
+#[derive(Debug, Default)]
 pub struct NodeAST {
     // Informations about NodeAST
     pub kind: NodeKindAST,
@@ -65,9 +77,9 @@ pub struct NodeAST {
 
 impl NodeAST {
     pub fn new(kind: NodeKindAST) -> Self {
-        NodeAST{ 
-            kind, 
-        }
+        let mut node = NodeAST::default();
+        node.kind = kind;
+        return node
     }
 
     pub fn copy(self) -> Self {
