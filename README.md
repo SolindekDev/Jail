@@ -1,4 +1,4 @@
-# Mao
+# Jail
 ## About
 It's an simple compiled programming language written fully in Rust. Mao have very easy syntax, you can use it to write variouse applications, also is it memory safe. Mao have very easy to use documentation where you can find everything about mao syntax and other things.
  
