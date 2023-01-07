@@ -1,0 +1,20 @@
+name: Request Feature
+description: Request a feature in Jail
+body:
+- type: input
+  attributes:
+    label: Overview
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Features
+  validations:
+    required: false
+
+- type: textarea
+  attributes:
+    label: References
+  validations:
+    required: false

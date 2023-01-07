@@ -1,0 +1,22 @@
+name: Bug report
+description: Report a bug in Jail
+body:
+- type: input
+  attributes:
+    label: System information
+    placeholder: Windows 10, Wgpu Render, GTX 750 ti
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Issue description
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Steps to reproduce
+  validations:
+    required: true
+

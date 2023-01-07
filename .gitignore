@@ -8,5 +8,4 @@ Cargo.lock
 .idea/
 .vscode/
 .project/
-# Github
-.github/
+
