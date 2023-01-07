@@ -1,6 +1,6 @@
 /*
-    Jail programming language
-    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
+    Jail programming language Copyright (C) 2022-2023 
+        - SolindekDev <ytsolindekttv@gmail.com>
 */
 
 // This enum represents all of token kinds in jail

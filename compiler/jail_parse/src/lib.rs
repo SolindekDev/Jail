@@ -1,6 +1,6 @@
 /*
-    Jail programming language
-    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
+    Jail programming language Copyright (C) 2022-2023 
+        - SolindekDev <ytsolindekttv@gmail.com>
 */
 
 use jail_token::*;
@@ -10,17 +10,9 @@ use jail_ast::*;
 use std::process::*;
 use ansi_term::Colour::Cyan;
 
-const KEYWORDS: &'static [&str] = &[
-    "proc",
-    "import",
-    "return"
-];
-
-// These const represent index of keyword in array 
-// above
-const KEYWORD_PROC:   i32 = 0;
-const KEYWORD_IMPORT: i32 = 1;
-const KEYWORD_RETURN: i32 = 2;
+const KEYWORD_FUNCTION:  &str = "proc";
+const KEYWORD_IMPORT:    &str = "import";
+const KEYWORD_RETURN:    &str = "return";
 
 pub struct Parser {
     lexer: Lexer,
@@ -44,8 +36,13 @@ impl Parser {
         self.current_token = self.lexer.tokens[self.index].clone();
     }
 
+    pub fn parse_function_declaration(&mut self) {
+        unimplemented!()
+    }
+
     pub fn parse_identifier(&mut self) {
         match self.current_token.value.as_str() {
+            KEYWORD_FUNCTION => self.parse_function_declaration(),
             _ => unimplemented!()
         }
     }

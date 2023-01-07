@@ -1,6 +1,6 @@
 /*
-    Jail programming language
-    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
+    Jail programming language Copyright (C) 2022-2023 
+        - SolindekDev <ytsolindekttv@gmail.com>
 */
 
 use ansi_term::Colour::{ Yellow };
@@ -12,9 +12,10 @@ use std::path::*;
 use std::fs;
 
 use jail_args_parser::*;
-use jail_lex::*;
+use jail_parse::*;
 use jail_token::*;
 use jail_error::*;
+use jail_lex::*;
 
 const VERSION_OF_COMPILER: &str = "1.0v";
 

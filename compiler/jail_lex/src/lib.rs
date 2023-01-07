@@ -1,6 +1,6 @@
 /*
-    Jail programming language
-    Copyright (C) 2022-2023 SolindekDev <ytsolindekttv@gmail.com>
+    Jail programming language Copyright (C) 2022-2023 
+        - SolindekDev <ytsolindekttv@gmail.com>
 */
 
 use jail_token::*;
@@ -168,6 +168,7 @@ impl Lexer {
             } else if self.current_char == '.' {
                 self.float();
             } else {
+                let lines: Vec<&str> = self.data.lines().collect();
                 self.is_error = true; print_error_with_line_and_pos(
                     ErrorKind::UnsupportedCharError, 
                     format!("{} ({}) unsupported char",
