@@ -12,7 +12,7 @@ const DECIMAL_DIGITS_CONSTANTS: &str = "1234567890";
 const HEXADECIMAL_DIGITS_CONSTANTS: &str = "1234567890abcdefABCDEF";
 const OCTALS_DIGITS_CONSTANTS: &str = "1234567890abcdefABCDEF";
 const BINARY_DIGITS_CONSTANTS: &str = "01";
-const SYMBOLS_CONSTANTS: &str = "(){}+-*/%=<>!|&?:";
+const SYMBOLS_CONSTANTS: &str = "(){}+-*/%=<>!|&?:,[]";
 
 #[derive(Clone, PartialEq)]
 pub struct LexerPosition {
@@ -419,6 +419,7 @@ impl Lexer {
     pub fn symbol(&mut self) {
         let lines: Vec<&str> = self.data.lines().collect();
         match self.current_char {
+            ',' => self.push_symbol_token(TokenKind::Comma, ","),
             '(' => self.push_symbol_token(TokenKind::LeftParen, "("),
             ')' => self.push_symbol_token(TokenKind::RightParen, ")"),
             '{' => self.push_symbol_token(TokenKind::LeftCurlyBrackets, "{"),

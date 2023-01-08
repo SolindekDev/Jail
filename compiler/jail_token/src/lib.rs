@@ -59,6 +59,7 @@ pub enum TokenKind {
     QuestionMark,
     Colon,
     Dot,
+    Comma,
     Arrow,
 
     // Other things
@@ -155,6 +156,7 @@ impl TokenKind {
             TokenKind::Colon                => "Colon".to_string(),
             TokenKind::Arrow                => "Arrow".to_string(),
             TokenKind::Dot                  => "Dot".to_string(),
+            TokenKind::Comma                => "Comma".to_string(),
             TokenKind::Newline              => "Newline".to_string(),
             TokenKind::Eof                  => "Eof".to_string(),
             TokenKind::None                 => "None".to_string(),

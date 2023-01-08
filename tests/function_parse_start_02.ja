@@ -1,1 +1,1 @@
-proc main
+proc main(name 32,)

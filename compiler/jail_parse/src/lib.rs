@@ -78,11 +78,60 @@ impl Parser {
         }
     }
 
+    pub fn convert_token_to_typeast(&mut self, token: Token) -> TypesAST {
+        // TODO: implement this function just convert token.value to TypesAST kind
+        //       for now just return i32 (int)
+        return TypesAST::I32;
+    }
+
     pub fn parse_arguments_function(&mut self) -> Vec<FunctionArgs> {
+        // TODO: repaire it so it work on file `./tests/function_parse_start_02.ja`
         let mut to_ret: Vec<FunctionArgs> = vec![];
 
-        while true {
-            break;
+        /* 
+            State:
+                0 - expecting name
+                1 - expecting type
+                2 - expecting comma
+        */
+        let mut state: i32 = 0;
+
+        loop {
+            match state {
+                0 => {
+                    // Get next token that will be the argument name
+                    self.is_next_token(TokenKind::Identifier);
+                    let argument: FunctionArgs = FunctionArgs::new(
+                        self.current_token.value.clone(), TypesAST::NONE);
+
+                    // Push argument to array of arguments and set the state to `expecting type`
+                    // that is equalation of 1
+                    to_ret.push(argument);
+                    state = 1;
+                }, 
+                1 => {
+                    // Get the last element of `to_ret` variable and convert token to 
+                    // `TypesAST` enumerator 
+                    let mut last_argument: &mut FunctionArgs = to_ret.last_mut().unwrap();
+                    let type_jail: TypesAST = self.convert_token_to_typeast(self.current_token.clone());
+                    self.advance(1);
+
+                    // Set type_jail to last item of `to_ret` array and set state to 2, so
+                    // we expect comma
+                    last_argument.argument_type = type_jail;
+                    state = 2;
+                },
+                2 => {
+                    // Is next token an comma `,` then set state to `expecting name` that is 
+                    // equalation of 0
+
+                    // TODO: don't make it loop forever if it's not an comma break
+                    self.is_next_token(TokenKind::Comma);
+                    state = 0;
+
+                },
+                _ => unimplemented!(),
+            }
         }   
 
         return to_ret;
@@ -90,7 +139,7 @@ impl Parser {
 
     pub fn is_next_token(&mut self, token_kind: TokenKind) {
         self.advance(1); 
-        if self.current_token.kind != TokenKind::Identifier {
+        if self.current_token.kind != token_kind {
             self.is_error = true; print_error_with_line_and_pos(
                 ErrorKind::SyntaxError, 
                 format!("expected `{}` not an `{}` type",
@@ -119,7 +168,7 @@ impl Parser {
 
         // Call function `parse_arguments_function` which will parse
         // arguments and return it by Vec<FunctionArgs>
-        let args: Vec<FunctionArgs> = self.parse_arguments_function();
+        let _args: Vec<FunctionArgs> = self.parse_arguments_function();
     }
 
     pub fn parse_identifier(&mut self) {
