@@ -94,7 +94,7 @@ impl Parser {
             self.is_error = true; print_error_with_line_and_pos(
                 ErrorKind::SyntaxError, 
                 format!("expected `{}` not an `{}` type",
-                    token_kind.get_pretty()
+                    token_kind.get_pretty(),
                     self.current_token.kind.get_pretty()),
                 TokenPos {
                     row: self.current_token.pos.row,
