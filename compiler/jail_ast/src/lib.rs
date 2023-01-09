@@ -18,6 +18,12 @@ pub enum TypesAST {
     F32,
     F64,
 
+    // Unsigneds
+    U8,
+    U16,
+    U32,
+    U64,
+
     // Other
     STR,
     BOOL,
@@ -31,21 +37,27 @@ impl TypesAST {
     pub fn get_pretty(&self) -> String {
         match self {
             // Ints
-            TypesAST::I8 => "i8".to_string(),
-            TypesAST::I16 => "i16".to_string(),
-            TypesAST::I32 => "int".to_string(),
-            TypesAST::I64 => "i64".to_string(),
+            TypesAST::I8   => "i8",
+            TypesAST::I16  => "i16",
+            TypesAST::I32  => "int",
+            TypesAST::I64  => "i64",
 
             // Floats
-            TypesAST::F16 => "f16".to_string(),
-            TypesAST::F32 => "float".to_string(),
-            TypesAST::F64 => "f64".to_string(),
+            TypesAST::F16  => "f16",
+            TypesAST::F32  => "float",
+            TypesAST::F64  => "f64",
+
+            // Unsigneds
+            TypesAST::U8   => "u8",
+            TypesAST::U16  => "u16",
+            TypesAST::U32  => "u32",
+            TypesAST::U64  => "u64",
 
             // Other
-            TypesAST::STR => "str".to_string(),
-            TypesAST::BOOL => "bool".to_string(),
-            TypesAST::NONE => "none".to_string(),
-        }
+            TypesAST::STR  => "str",
+            TypesAST::BOOL => "bool",
+            TypesAST::NONE => "none",
+        }.to_string()
     } 
 }
 
@@ -57,13 +69,13 @@ pub enum NodeKindAST {
     NoneKind,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FunctionArgs {
     pub name: String,
     pub argument_type: TypesAST,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct NodeAST {
     // Informations about NodeAST
     pub kind: NodeKindAST,
@@ -71,7 +83,7 @@ pub struct NodeAST {
     // Function declaration kind
     pub func_name: String,
     pub func_args: Vec<FunctionArgs>,
-    pub func_body: Vec<NodeKindAST>,
+    pub func_body: Vec<NodeAST>,
     pub func_return: TypesAST,
 }
 
@@ -81,6 +93,12 @@ impl NodeAST {
         node.kind = kind;
         return node
     }
+
+    // pub fn new_mut(kind: NodeKindAST) -> &'static mut Self {
+    //     let mut node: &mut NodeAST = &mut NodeAST::default();
+    //     node.kind = kind;
+    //     return node.clone()
+    // }
 
     pub fn copy(self) -> Self {
         return self;

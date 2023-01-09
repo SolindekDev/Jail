@@ -1,1 +1,1 @@
-proc main(name 32,)
+proc create_person(name str, age i32, is_cool bool) -> f32 
