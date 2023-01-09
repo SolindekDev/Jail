@@ -12,8 +12,8 @@ use std::process::*;
 use std::ptr::null;
 
 const KEYWORD_FUNCTION:  &str = "proc";
-const KEYWORD_IMPORT:    &str = "import";
-const KEYWORD_RETURN:    &str = "return";
+// const KEYWORD_IMPORT:    &str = "import";
+// const KEYWORD_RETURN:    &str = "return";
 
 pub struct Parser{
     /* Essential fields */
@@ -230,7 +230,7 @@ impl Parser {
         self.is_function_opened = true;
         self.curr_function = self.nodes.last().unwrap();
 
-        // self.is_next_token
+        self.is_next_token(TokenKind::LeftCurlyBrackets);
 
         self.advance(1);
     }
@@ -254,18 +254,34 @@ impl Parser {
             match self.current_token.kind {
                 TokenKind::Identifier => self.parse_identifier(),
                 TokenKind::Newline => {},
+                TokenKind::RightCurlyBrackets => {
+                    if self.is_function_opened != true { 
+                        self.is_error = true; print_error_with_line_and_pos(
+                            ErrorKind::SyntaxError, 
+                            format!("unexpected use of `{}` in this expression", 
+                                self.current_token.kind.get_pretty()),
+                            TokenPos {
+                                row: self.current_token.pos.row,
+                                col: self.current_token.pos.col,
+                            }, self.lexer.position.filename.clone(), 
+                            self.lines[(self.current_token.pos.row - 1) as usize].to_string(), true)
+                    }
+                    self.is_function_opened = false; 
+                    self.advance(1);
+                }
                 TokenKind::Eof => { 
                     break;
                 },
                 _ => {
-                    print_error_with_pos(
+                    self.is_error = true; print_error_with_line_and_pos(
                         ErrorKind::ParserError,
                         format!("unexpected use of `{}` in this expression", 
                             self.current_token.kind.get_pretty()),
-                        self.current_token.pos.clone(),
-                        self.current_token.filename.clone(),
-                        true
-                    );
+                            TokenPos {
+                                row: self.current_token.pos.row,
+                                col: self.current_token.pos.col,
+                            }, self.lexer.position.filename.clone(), 
+                            self.lines[(self.current_token.pos.row - 1) as usize].to_string(), true)
                 }
             }
         }

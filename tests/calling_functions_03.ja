@@ -1,0 +1,9 @@
+/*
+proc create_person(name str, age i32, is_cool bool) -> f32 {
+    // Create person ^_^
+}
+
+proc main(i64 argv_ptr) -> i32 {
+    create_person("Bruno", 18, true)
+}
+*/
